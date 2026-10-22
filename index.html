@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="VSMS – Vehicle Service Management System. Book, track, and manage vehicle servicing with ease. Professional automotive service platform.">
+  <title>VSMS – Vehicle Service Management System</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="landing-nav" id="mainNav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo" aria-label="VSMS Home">
+      <div class="nav-logo-icon" aria-hidden="true">🚗</div>
+      <div>
+        <div class="nav-logo-text">VSMS</div>
+        <span class="nav-logo-sub">Vehicle Service Management</span>
+      </div>
+    </a>
+    <div class="nav-links" role="list">
+      <a href="#about"        class="nav-link" role="listitem">About</a>
+      <a href="#services"     class="nav-link" role="listitem">Services</a>
+      <a href="#features"     class="nav-link" role="listitem">Features</a>
+      <a href="#workflow"     class="nav-link" role="listitem">How It Works</a>
+      <a href="#testimonials" class="nav-link" role="listitem">Reviews</a>
+      <a href="#contact"      class="nav-link" role="listitem">Contact</a>
+    </div>
+    <div class="nav-cta">
+      <button id="themeToggleNav" class="btn btn-ghost btn-icon" aria-label="Toggle dark mode" title="Toggle theme">🌙</button>
+      <a href="login.html" class="btn btn-outline-primary btn-sm">Sign In</a>
+      <a href="login.html?tab=register" class="btn btn-primary btn-sm">Get Started</a>
+    </div>
+    <button class="nav-hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">☰</button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <button class="mobile-menu-close" id="menuClose" aria-label="Close menu">✕</button>
+  <a href="#about"        class="nav-link">About</a>
+  <a href="#services"     class="nav-link">Services</a>
+  <a href="#features"     class="nav-link">Features</a>
+  <a href="#workflow"     class="nav-link">How It Works</a>
+  <a href="#testimonials" class="nav-link">Reviews</a>
+  <a href="#contact"      class="nav-link">Contact</a>
+  <a href="login.html" class="btn btn-primary btn-block mt-4">Get Started Free</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero" aria-labelledby="hero-heading">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div class="hero-content">
+      <div class="hero-badge" role="note">
+        <span>🏆</span> India's #1 Vehicle Service Platform
+      </div>
+      <h1 id="hero-heading">
+        Smart Vehicle<br><span>Service Management</span><br>Made Simple
+      </h1>
+      <p class="hero-desc">
+        Complete automotive service solution — from booking to billing. 
+        Track repairs in real-time, manage inventory, and delight customers 
+        with a professional service experience.
+      </p>
+      <div class="hero-btns">
+        <a href="login.html?tab=register" class="btn btn-primary btn-xl" id="hero-cta-register">
+          🚀 Start Free Today
+        </a>
+        <a href="login.html" class="btn btn-xl" style="background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.3);" id="hero-cta-login">
+          🔑 Sign In
+        </a>
+      </div>
+      <div class="hero-stats" role="list" aria-label="Platform statistics">
+        <div role="listitem">
+          <div class="hero-stat-num" id="stat-c">0</div>
+          <div class="hero-stat-label">Happy Customers</div>
+        </div>
+        <div role="listitem">
+          <div class="hero-stat-num" id="stat-s">0</div>
+          <div class="hero-stat-label">Services Completed</div>
+        </div>
+        <div role="listitem">
+          <div class="hero-stat-num" id="stat-r">0</div>
+          <div class="hero-stat-label">Years of Excellence</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-card-wrap">
+        <div class="hero-card-main">
+          <h3>🔧 Live Service Tracker</h3>
+          <div class="hero-tracker" role="list">
+            <div class="hero-track-item" role="listitem">
+              <div class="hero-track-dot done">✓</div>
+              <div class="hero-track-info">
+                <div class="hero-track-label">Appointment Confirmed</div>
+                <div class="hero-track-sub">APT-2025-001 • 10:00 AM</div>
+              </div>
+            </div>
+            <div class="hero-track-item" role="listitem">
+              <div class="hero-track-dot done">✓</div>
+              <div class="hero-track-info">
+                <div class="hero-track-label">Vehicle Checked-In</div>
+                <div class="hero-track-sub">KA-01-AB-1234 • 10:15 AM</div>
+              </div>
+            </div>
+            <div class="hero-track-item" role="listitem">
+              <div class="hero-track-dot active">🔧</div>
+              <div class="hero-track-info">
+                <div class="hero-track-label">Under Repair</div>
+                <div class="hero-track-sub">Engine Service • Est. 2h</div>
+              </div>
+            </div>
+            <div class="hero-track-item" role="listitem">
+              <div class="hero-track-dot pending">4</div>
+              <div class="hero-track-info">
+                <div class="hero-track-label" style="color:rgba(255,255,255,.5)">Quality Check</div>
+                <div class="hero-track-sub">Pending</div>
+              </div>
+            </div>
+            <div class="hero-track-item" role="listitem">
+              <div class="hero-track-dot pending">5</div>
+              <div class="hero-track-info">
+                <div class="hero-track-label" style="color:rgba(255,255,255,.5)">Service Complete</div>
+                <div class="hero-track-sub">Pending</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-card-float hero-card-float-1">
+          <div class="float-icon">📊</div>
+          <div class="float-text">
+            <strong>Revenue Up 40%</strong>
+            <span>This month</span>
+          </div>
+        </div>
+        <div class="hero-card-float hero-card-float-2">
+          <div class="float-icon">⭐</div>
+          <div class="float-text">
+            <strong>4.9/5 Rating</strong>
+            <span>2,400+ reviews</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="section" id="about" aria-labelledby="about-heading">
+  <div class="section-container">
+    <div class="about-grid">
+      <div class="about-img-wrap">
+        <div class="about-img-placeholder" role="img" aria-label="VSMS Service Center illustration">
+          <div class="about-img-icon" aria-hidden="true">🏗️</div>
+          <h3>Modern Service Center</h3>
+          <p>State-of-the-art facility management with cutting-edge diagnostic tools</p>
+        </div>
+        <div class="about-badge" aria-label="10 years of excellence">
+          <div class="about-badge-num">10+</div>
+          <div class="about-badge-text">Years of<br>Excellence</div>
+        </div>
+      </div>
+      <div>
+        <div class="section-eyebrow" aria-label="Section category">🎯 About VSMS</div>
+        <h2 class="section-heading" id="about-heading">Revolutionizing Automotive Service Management</h2>
+        <p class="section-subtext">
+          VSMS is a comprehensive digital platform that transforms how vehicle service centers operate — 
+          connecting customers, service advisors, mechanics, and administrators in one seamless system.
+        </p>
+        <div class="about-points" role="list">
+          <div class="about-point" role="listitem">
+            <div class="about-point-icon" aria-hidden="true">🎯</div>
+            <div>
+              <div class="about-point-title">Complete Service Lifecycle</div>
+              <div class="about-point-text">From initial booking to final delivery — every step digitally managed, tracked, and optimized.</div>
+            </div>
+          </div>
+          <div class="about-point" role="listitem">
+            <div class="about-point-icon" aria-hidden="true">👥</div>
+            <div>
+              <div class="about-point-title">Multi-Role Platform</div>
+              <div class="about-point-text">Dedicated interfaces for Customers, Service Advisors, Mechanics, and Administrators.</div>
+            </div>
+          </div>
+          <div class="about-point" role="listitem">
+            <div class="about-point-icon" aria-hidden="true">📱</div>
+            <div>
+              <div class="about-point-title">Works Everywhere</div>
+              <div class="about-point-text">Responsive design that works perfectly on desktop, tablet, and mobile — no app installation needed.</div>
+            </div>
+          </div>
+        </div>
+        <a href="login.html?tab=register" class="btn btn-primary btn-lg mt-6" id="about-cta">Get Started Now →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="section services-bg" id="services" aria-labelledby="services-heading">
+  <div class="section-container">
+    <div class="text-center mb-6">
+      <div class="section-eyebrow">🔧 Our Services</div>
+      <h2 class="section-heading" id="services-heading">Everything Your Vehicle Needs</h2>
+      <p class="section-subtext" style="margin:0 auto">Professional automotive services by certified technicians with genuine spare parts and manufacturer-approved processes.</p>
+    </div>
+    <div class="services-grid" role="list" aria-label="Available services">
+      <article class="service-card" role="listitem">
+        <div class="service-card-icon" aria-hidden="true">🔧</div>
+        <h3>General Service</h3>
+        <p>Complete vehicle checkup, fluid top-up, filter replacement, and 50-point inspection.</p>
+        <div class="service-card-price">Starting ₹2,500</div>
+      </article>
+      <article class="service-card" role="listitem">
+        <div class="service-card-icon" aria-hidden="true">🛢️</div>
+        <h3>Oil Change</h3>
+        <p>Premium engine oil and filter replacement to keep your engine running smoothly.</p>
+        <div class="service-card-price">Starting ₹800</div>
+      </article>
+      <article class="service-card" role="listitem">
+        <div class="service-card-icon" aria-hidden="true">🛑</div>
+        <h3>Brake Service</h3>
+        <p>Complete brake inspection, pad replacement, and disc resurfacing for your safety.</p>
+        <div class="service-card-price">Starting ₹3,500</div>
+      </article>
+      <article class="service-card" role="listitem">
+        <div class="service-card-icon" aria-hidden="true">⚙️</div>
+        <h3>Engine Repair</h3>
+        <p>Comprehensive engine diagnosis and repair by expert technicians.</p>
+        <div class="service-card-price">Starting ₹12,000</div>
+      </article>
+      <article class="service-card" role="listitem">
+        <div class="service-card-icon" aria-hidden="true">❄️</div>
+        <h3>AC Service</h3>
+        <p>AC gas refill, compressor check, filter cleaning for optimal cabin comfort.</p>
+        <div class="service-card-price">Starting ₹2,800</div>
+      </article>
+      <article class="service-card" role="listitem">
+        <div class="service-card-icon" aria-hidden="true">🔋</div>
+        <h3>Battery Replacement</h3>
+        <p>Battery health testing and replacement with 12-month warranty coverage.</p>
+        <div class="service-card-price">Starting ₹5,500</div>
+      </article>
+      <article class="service-card" role="listitem">
+        <div class="service-card-icon" aria-hidden="true">⭕</div>
+        <h3>Wheel Alignment</h3>
+        <p>4-wheel alignment, balancing, and rotation for better handling and tyre life.</p>
+        <div class="service-card-price">Starting ₹1,200</div>
+      </article>
+      <article class="service-card" role="listitem">
+        <div class="service-card-icon" aria-hidden="true">🏎️</div>
+        <h3>Tyre Service</h3>
+        <p>Tyre change, puncture repair, rotation, and pressure optimization.</p>
+        <div class="service-card-price">Starting ₹600</div>
+      </article>
+      <article class="service-card" role="listitem">
+        <div class="service-card-icon" aria-hidden="true">🔍</div>
+        <h3>Full Inspection</h3>
+        <p>100-point comprehensive vehicle inspection report with digital records.</p>
+        <div class="service-card-price">Starting ₹999</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FEATURES ===== -->
+<section class="section" id="features" aria-labelledby="features-heading">
+  <div class="section-container">
+    <div class="text-center mb-6">
+      <div class="section-eyebrow">✨ Features</div>
+      <h2 class="section-heading" id="features-heading">Built for Modern Service Excellence</h2>
+      <p class="section-subtext" style="margin:0 auto">Every feature designed to streamline operations, improve customer satisfaction, and maximize revenue.</p>
+    </div>
+    <div class="features-grid" role="list">
+      <div class="feature-item" role="listitem">
+        <div class="feature-icon" style="background:var(--primary-light)" aria-hidden="true">📅</div>
+        <div class="feature-text">
+          <h4>Smart Appointment Booking</h4>
+          <p>Customers book appointments 24/7 with real-time slot availability, service selection, and instant confirmation.</p>
+        </div>
+      </div>
+      <div class="feature-item" role="listitem">
+        <div class="feature-icon" style="background:var(--success-light)" aria-hidden="true">📍</div>
+        <div class="feature-text">
+          <h4>Real-Time Service Tracking</h4>
+          <p>Visual step-by-step tracker keeps customers informed from check-in to delivery — no more anxious calls.</p>
+        </div>
+      </div>
+      <div class="feature-item" role="listitem">
+        <div class="feature-icon" style="background:var(--warning-light)" aria-hidden="true">📋</div>
+        <div class="feature-text">
+          <h4>Digital Job Cards</h4>
+          <p>Paperless job cards with inspection notes, mechanic assignments, parts tracking, and status updates.</p>
+        </div>
+      </div>
+      <div class="feature-item" role="listitem">
+        <div class="feature-icon" style="background:var(--purple-light)" aria-hidden="true">📦</div>
+        <div class="feature-text">
+          <h4>Inventory Management</h4>
+          <p>Automated stock tracking with low-stock alerts, supplier management, and real-time availability.</p>
+        </div>
+      </div>
+      <div class="feature-item" role="listitem">
+        <div class="feature-icon" style="background:var(--info-light)" aria-hidden="true">🧾</div>
+        <div class="feature-text">
+          <h4>Professional Invoicing</h4>
+          <p>Auto-generated invoices with parts, labour, tax, and discounts. One-click print and download.</p>
+        </div>
+      </div>
+      <div class="feature-item" role="listitem">
+        <div class="feature-icon" style="background:var(--danger-light)" aria-hidden="true">💳</div>
+        <div class="feature-text">
+          <h4>Integrated Payments</h4>
+          <p>UPI, Credit/Debit Card, Net Banking, and Cash payment options with instant digital receipts.</p>
+        </div>
+      </div>
+      <div class="feature-item" role="listitem">
+        <div class="feature-icon" style="background:var(--primary-light)" aria-hidden="true">📊</div>
+        <div class="feature-text">
+          <h4>Business Analytics</h4>
+          <p>Revenue reports, mechanic workload, popular services, and daily/monthly appointment analytics.</p>
+        </div>
+      </div>
+      <div class="feature-item" role="listitem">
+        <div class="feature-icon" style="background:var(--success-light)" aria-hidden="true">🔔</div>
+        <div class="feature-text">
+          <h4>Smart Notifications</h4>
+          <p>Automated alerts for appointments, repair updates, invoices, payments, and service reminders.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== WORKFLOW ===== -->
+<section class="section workflow-bg" id="workflow" aria-labelledby="workflow-heading">
+  <div class="section-container">
+    <div class="text-center mb-6">
+      <div class="section-eyebrow" style="background:rgba(255,255,255,.1);color:rgba(255,255,255,.9)">⚡ How It Works</div>
+      <h2 class="section-heading" id="workflow-heading">From Booking to Delivery</h2>
+      <p class="section-subtext" style="color:rgba(255,255,255,.7);margin:0 auto">A seamless 8-step process that ensures quality, transparency, and customer satisfaction at every stage.</p>
+    </div>
+    <div class="workflow-steps" role="list" aria-label="Service workflow steps">
+      <div class="workflow-step" role="listitem">
+        <div class="workflow-num">1</div>
+        <h4>Book Service</h4>
+        <p>Select service, date & time online</p>
+      </div>
+      <div class="workflow-step highlight" role="listitem">
+        <div class="workflow-num">2</div>
+        <h4>Confirmation</h4>
+        <p>Instant appointment confirmation</p>
+      </div>
+      <div class="workflow-step" role="listitem">
+        <div class="workflow-num">3</div>
+        <h4>Check-In</h4>
+        <p>Vehicle arrival & job card creation</p>
+      </div>
+      <div class="workflow-step" role="listitem">
+        <div class="workflow-num">4</div>
+        <h4>Inspection</h4>
+        <p>Thorough vehicle inspection</p>
+      </div>
+      <div class="workflow-step highlight" role="listitem">
+        <div class="workflow-num">5</div>
+        <h4>Repair</h4>
+        <p>Expert repairs with genuine parts</p>
+      </div>
+      <div class="workflow-step" role="listitem">
+        <div class="workflow-num">6</div>
+        <h4>Quality Check</h4>
+        <p>Rigorous quality verification</p>
+      </div>
+      <div class="workflow-step" role="listitem">
+        <div class="workflow-num">7</div>
+        <h4>Invoice & Pay</h4>
+        <p>Transparent billing & payment</p>
+      </div>
+      <div class="workflow-step highlight" role="listitem">
+        <div class="workflow-num">8</div>
+        <h4>Delivery</h4>
+        <p>Vehicle handover & feedback</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STATISTICS ===== -->
+<section class="section" id="statistics" aria-labelledby="stats-heading">
+  <div class="section-container">
+    <div class="text-center mb-6">
+      <div class="section-eyebrow">📈 By The Numbers</div>
+      <h2 class="section-heading" id="stats-heading">Trusted by Thousands Nationwide</h2>
+    </div>
+    <div class="stats-grid" role="list" aria-label="Platform statistics">
+      <div class="text-center" role="listitem">
+        <div class="stat-number"><span class="counter" data-target="15000">0</span>+</div>
+        <div class="stat-desc">Happy Customers</div>
+      </div>
+      <div class="text-center" role="listitem">
+        <div class="stat-number"><span class="counter" data-target="45000">0</span>+</div>
+        <div class="stat-desc">Services Completed</div>
+      </div>
+      <div class="text-center" role="listitem">
+        <div class="stat-number"><span class="counter" data-target="98">0</span>%</div>
+        <div class="stat-desc">Customer Satisfaction</div>
+      </div>
+      <div class="text-center" role="listitem">
+        <div class="stat-number"><span class="counter" data-target="50">0</span>+</div>
+        <div class="stat-desc">Service Centers</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="section testimonials-bg" id="testimonials" aria-labelledby="testimonials-heading">
+  <div class="section-container">
+    <div class="text-center mb-6">
+      <div class="section-eyebrow">💬 Testimonials</div>
+      <h2 class="section-heading" id="testimonials-heading">What Our Customers Say</h2>
+    </div>
+    <div class="testimonials-grid" role="list" aria-label="Customer testimonials">
+      <article class="testimonial-card" role="listitem">
+        <div class="quote-mark" aria-hidden="true">"</div>
+        <div class="testimonial-stars" aria-label="5 star rating">★★★★★</div>
+        <p class="testimonial-text">VSMS completely transformed how I manage my car's service. I can track everything in real-time and never miss a service reminder!</p>
+        <div class="testimonial-author">
+          <div class="avatar avatar-sm" aria-hidden="true">RK</div>
+          <div>
+            <div class="testimonial-name">Rajesh Kumar</div>
+            <div class="testimonial-role">Software Engineer, Bangalore</div>
+          </div>
+        </div>
+      </article>
+      <article class="testimonial-card" role="listitem">
+        <div class="quote-mark" aria-hidden="true">"</div>
+        <div class="testimonial-stars" aria-label="5 star rating">★★★★★</div>
+        <p class="testimonial-text">The service booking is so easy! I booked an oil change in 2 minutes, got a confirmation, and tracked every step. Highly recommended!</p>
+        <div class="testimonial-author">
+          <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#10b981,#0891b2)" aria-hidden="true">PS</div>
+          <div>
+            <div class="testimonial-name">Priya Sharma</div>
+            <div class="testimonial-role">Marketing Manager, Chennai</div>
+          </div>
+        </div>
+      </article>
+      <article class="testimonial-card" role="listitem">
+        <div class="quote-mark" aria-hidden="true">"</div>
+        <div class="testimonial-stars" aria-label="5 star rating">★★★★★</div>
+        <p class="testimonial-text">As a fleet owner managing 10 vehicles, VSMS is a lifesaver. The admin dashboard gives me all the data I need at a glance.</p>
+        <div class="testimonial-author">
+          <div class="avatar avatar-sm" style="background:linear-gradient(135deg,#f59e0b,#ef4444)" aria-hidden="true">AS</div>
+          <div>
+            <div class="testimonial-name">Amit Singh</div>
+            <div class="testimonial-role">Fleet Manager, Hyderabad</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section class="section" id="contact" aria-labelledby="contact-heading">
+  <div class="section-container">
+    <div class="contact-grid">
+      <div>
+        <div class="section-eyebrow">📞 Get In Touch</div>
+        <h2 class="section-heading" id="contact-heading">We're Here to Help</h2>
+        <p class="section-subtext">Have questions? Our support team is ready to assist you 24/7.</p>
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon" aria-hidden="true">📍</div>
+            <div>
+              <div class="contact-label">Address</div>
+              <div class="contact-value">VSMS HQ, 100 Tech Park, Whitefield, Bangalore – 560066</div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon" aria-hidden="true">📞</div>
+            <div>
+              <div class="contact-label">Phone</div>
+              <div class="contact-value"><a href="tel:+918001234567">+91 800 123 4567</a></div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon" aria-hidden="true">✉️</div>
+            <div>
+              <div class="contact-label">Email</div>
+              <div class="contact-value"><a href="mailto:support@vsms.in">support@vsms.in</a></div>
+            </div>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon" aria-hidden="true">🕐</div>
+            <div>
+              <div class="contact-label">Support Hours</div>
+              <div class="contact-value">Mon–Sat: 8:00 AM – 8:00 PM IST</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form-card">
+        <h3 class="mb-4">Send Us a Message</h3>
+        <form id="contact-form" novalidate aria-label="Contact form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="contact-name">Full Name <span class="required" aria-hidden="true">*</span></label>
+              <input type="text" id="contact-name" name="name" class="form-control" placeholder="John Doe" required aria-required="true">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="contact-email">Email <span class="required" aria-hidden="true">*</span></label>
+              <input type="email" id="contact-email" name="email" class="form-control" placeholder="john@example.com" required aria-required="true">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contact-subject">Subject <span class="required" aria-hidden="true">*</span></label>
+            <input type="text" id="contact-subject" name="subject" class="form-control" placeholder="How can we help?" required aria-required="true">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="contact-message">Message <span class="required" aria-hidden="true">*</span></label>
+            <textarea id="contact-message" name="message" class="form-control" rows="5" placeholder="Describe your issue or question…" required aria-required="true"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block" id="contact-submit">Send Message 📨</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer" role="contentinfo">
+  <div class="section-container">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="nav-logo" style="margin-bottom:4px">
+          <div class="nav-logo-icon" aria-hidden="true">🚗</div>
+          <div>
+            <div class="nav-logo-text" style="color:#fff">VSMS</div>
+            <span class="nav-logo-sub">Vehicle Service Management</span>
+          </div>
+        </a>
+        <p class="footer-brand-desc">India's most comprehensive vehicle service management platform — built to streamline automotive operations and delight customers.</p>
+        <div class="footer-social" aria-label="Social media links">
+          <a href="#" aria-label="Facebook">f</a>
+          <a href="#" aria-label="Twitter">t</a>
+          <a href="#" aria-label="LinkedIn">in</a>
+          <a href="#" aria-label="Instagram">ig</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Platform</div>
+        <div class="footer-links">
+          <a href="#features">Features</a>
+          <a href="#services">Services</a>
+          <a href="#workflow">How It Works</a>
+          <a href="login.html">Sign In</a>
+          <a href="login.html?tab=register">Register</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Portals</div>
+        <div class="footer-links">
+          <a href="customer.html">Customer Portal</a>
+          <a href="advisor.html">Advisor Portal</a>
+          <a href="mechanic.html">Mechanic Portal</a>
+          <a href="admin.html">Admin Portal</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Support</div>
+        <div class="footer-links">
+          <a href="#contact">Contact Us</a>
+          <a href="#">Documentation</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 VSMS – Vehicle Service Management System. All rights reserved.</span>
+      <span>Made with ❤️ for SE Project</span>
+    </div>
+  </div>
+</footer>
+
+<div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/landing.js"></script>
+</body>
+</html>

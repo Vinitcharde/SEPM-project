@@ -1,0 +1,130 @@
+/* ============================================================
+   Auth Page Styles (Login / Register / Reset)
+   ============================================================ */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: stretch;
+}
+
+/* ------ Left Panel ------ */
+.auth-left {
+  flex: 0 0 45%;
+  background: linear-gradient(145deg, #0f172a 0%, #1e3a8a 50%, #1d4ed8 100%);
+  display: flex; flex-direction: column;
+  padding: 40px; position: relative; overflow: hidden;
+}
+.auth-left::before {
+  content: ''; position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.auth-left::after {
+  content: ''; position: absolute; bottom: -100px; right: -100px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: rgba(37,99,235,.15);
+}
+
+.auth-brand { position: relative; z-index: 1; }
+.auth-brand-logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none; margin-bottom: 60px;
+}
+.auth-brand-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+}
+.auth-brand-name { font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: #fff; }
+.auth-brand-tagline { font-size: 0.8rem; color: rgba(255,255,255,.6); }
+
+.auth-hero { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.auth-hero h1 { color: #fff; font-size: clamp(1.5rem, 3vw, 2.2rem); margin-bottom: 16px; }
+.auth-hero p  { color: rgba(255,255,255,.7); font-size: 1rem; line-height: 1.7; }
+.auth-features { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; }
+.auth-feature {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,.06); border-radius: var(--radius);
+  padding: 14px 16px; border: 1px solid rgba(255,255,255,.08);
+  backdrop-filter: blur(4px);
+}
+.auth-feature-icon { font-size: 1.4rem; }
+.auth-feature-text strong { display: block; color: #fff; font-size: 0.9rem; }
+.auth-feature-text span   { color: rgba(255,255,255,.6); font-size: 0.8rem; }
+
+.auth-bottom { position: relative; z-index: 1; margin-top: 40px; }
+.auth-testimonial {
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--radius); padding: 16px;
+}
+.auth-testimonial p { color: rgba(255,255,255,.8); font-size: 0.875rem; font-style: italic; }
+.auth-testimonial-author { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.auth-testimonial-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; color: #fff; font-weight: 700; }
+.auth-testimonial-name { font-size: 0.8rem; color: #fff; font-weight: 600; }
+.auth-testimonial-title { font-size: 0.72rem; color: rgba(255,255,255,.5); }
+
+/* ------ Right Panel ------ */
+.auth-right {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 40px; overflow-y: auto;
+}
+.auth-card {
+  width: 100%; max-width: 460px;
+}
+.auth-card-header { text-align: center; margin-bottom: 32px; }
+.auth-card-header h2 { font-size: 1.75rem; margin-bottom: 8px; }
+.auth-card-header p  { color: var(--text-secondary); }
+
+.auth-form { }
+.auth-tabs { display: flex; gap: 0; margin-bottom: 28px; background: var(--bg-body); border-radius: var(--radius); padding: 4px; }
+.auth-tab-btn {
+  flex: 1; padding: 10px; border: none; background: none;
+  border-radius: var(--radius-sm); font-weight: 600; font-size: 0.875rem;
+  color: var(--text-secondary); transition: var(--transition);
+}
+.auth-tab-btn.active { background: var(--bg-card); color: var(--primary); box-shadow: var(--shadow-sm); }
+
+.auth-divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+.auth-divider::before, .auth-divider::after { content: ''; flex: 1; border-top: 1px solid var(--border); }
+.auth-divider span { color: var(--text-muted); font-size: 0.8rem; }
+
+.auth-social-btns { display: flex; gap: 10px; margin-bottom: 20px; }
+.auth-social-btn {
+  flex: 1; padding: 10px; border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); background: var(--bg-card);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: 0.875rem; font-weight: 500; color: var(--text-primary);
+  transition: var(--transition);
+}
+.auth-social-btn:hover { border-color: var(--primary); background: var(--primary-light); }
+
+.auth-footer { margin-top: 24px; text-align: center; font-size: 0.875rem; color: var(--text-secondary); }
+.auth-footer a { font-weight: 600; }
+
+.role-selector { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 18px; }
+.role-option {
+  border: 2px solid var(--border); border-radius: var(--radius);
+  padding: 14px 10px; text-align: center; cursor: pointer;
+  transition: var(--transition); background: var(--bg-card);
+}
+.role-option:hover { border-color: var(--primary); }
+.role-option.selected { border-color: var(--primary); background: var(--primary-light); }
+.role-option input[type="radio"] { display: none; }
+.role-icon { font-size: 1.75rem; display: block; margin-bottom: 6px; }
+.role-name  { font-size: 0.8125rem; font-weight: 600; color: var(--text-primary); }
+
+.password-strength { margin-top: 6px; }
+.strength-bar { display: flex; gap: 4px; }
+.strength-seg { height: 4px; flex: 1; border-radius: 2px; background: var(--border); transition: var(--transition); }
+.strength-seg.active.weak   { background: var(--danger); }
+.strength-seg.active.fair   { background: var(--warning); }
+.strength-seg.active.good   { background: var(--info); }
+.strength-seg.active.strong { background: var(--success); }
+.strength-text { font-size: 0.75rem; margin-top: 4px; color: var(--text-muted); }
+
+/* ------ Responsive ------ */
+@media (max-width: 900px) {
+  .auth-left { display: none; }
+  .auth-right { padding: 30px 20px; }
+}

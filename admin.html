@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard – VSMS</title>
+  <meta name="description" content="VSMS Administrator Management Console – Users, Vehicles, Inventory, Financials, Services, and Reports.">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="index.html" class="sidebar-logo">
+    <div class="sidebar-logo-icon">👑</div>
+    <div class="sidebar-logo-text"><h2>VSMS</h2><span>Admin Console</span></div>
+  </a>
+  <div class="sidebar-user">
+    <div class="avatar" id="sidebarAvatar">AD</div>
+    <div class="sidebar-user-info">
+      <div class="sidebar-user-name" id="sidebarName">Admin</div>
+      <div class="sidebar-user-role">System Administrator</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Analytics</div>
+    <button class="nav-item active" data-view="dashboard" data-tooltip="Dashboard"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></button>
+    <button class="nav-item" data-view="reports" data-tooltip="Reports & Analytics"><span class="nav-icon">📈</span><span class="nav-label">Reports & Analytics</span></button>
+    <div class="nav-section-title">Administration</div>
+    <button class="nav-item" data-view="users" data-tooltip="User Management"><span class="nav-icon">👥</span><span class="nav-label">User Management</span></button>
+    <button class="nav-item" data-view="vehicles" data-tooltip="Vehicles Fleet"><span class="nav-icon">🚗</span><span class="nav-label">Vehicles Fleet</span></button>
+    <button class="nav-item" data-view="inventory" data-tooltip="Parts & Inventory"><span class="nav-icon">📦</span><span class="nav-label">Parts & Inventory</span><span class="nav-badge" id="sidebarStockBadge"></span></button>
+    <button class="nav-item" data-view="services" data-tooltip="Services Catalog"><span class="nav-icon">🔧</span><span class="nav-label">Services Catalog</span></button>
+    <button class="nav-item" data-view="financials" data-tooltip="Invoices & Revenue"><span class="nav-icon">💰</span><span class="nav-label">Invoices & Billing</span></button>
+    <div class="nav-section-title">System</div>
+    <button class="nav-item" data-view="notifications" data-tooltip="Notifications"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge" id="sidebarNotifBadge"></span></button>
+    <button class="nav-item" data-view="settings" data-tooltip="System Settings"><span class="nav-icon">⚙️</span><span class="nav-label">Settings & Reset</span></button>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="nav-item" id="logoutBtn" data-tooltip="Logout"><span class="nav-icon">🚪</span><span class="nav-label">Logout</span></button>
+  </div>
+</aside>
+
+<!-- TOP NAVIGATION -->
+<header class="topnav" id="topnav">
+  <button class="topnav-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+  <div class="topnav-search">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="globalSearch" placeholder="Search users, invoices, parts, vehicles…" aria-label="Global search">
+  </div>
+  <div class="topnav-actions">
+    <button class="topnav-btn" id="themeToggle" aria-label="Toggle theme">🌙</button>
+    <div class="dropdown" style="position:relative">
+      <button class="topnav-btn" id="notifBtn" aria-label="Notifications">🔔<span class="topnav-notif-count" id="notifCount">0</span></button>
+      <div class="notif-panel" id="notifPanel">
+        <div class="notif-header"><h4 style="margin:0">Admin Alerts</h4><button class="btn btn-sm btn-ghost" id="markAllRead">Mark all read</button></div>
+        <div class="notif-list" id="notifList"></div>
+      </div>
+    </div>
+    <div class="dropdown">
+      <button class="topnav-user" id="userMenuBtn">
+        <div class="avatar" id="topnavAvatar">AD</div>
+        <div class="topnav-user-info"><div class="topnav-user-name" id="topnavName">Admin</div><div class="topnav-user-role">Administrator</div></div>
+        <span>▾</span>
+      </button>
+      <div class="dropdown-menu" id="userMenu">
+        <a href="#" onclick="switchView('settings')">⚙️ Settings</a>
+        <div class="dropdown-divider"></div>
+        <button onclick="Auth.logout()">🚪 Logout</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="main-content" id="mainContent">
+
+  <!-- DASHBOARD OVERVIEW -->
+  <div class="view active" id="view-dashboard">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div>
+          <h1 class="page-title">Executive Management Overview</h1>
+          <p class="page-subtitle">Real-time system health, revenue insights and fleet operations.</p>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-primary" onclick="openAddUserModal()">+ Add User</button>
+          <button class="btn btn-secondary" onclick="openAddPartModal()">+ Add Part</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAT CARDS -->
+    <div class="grid-stat mb-6">
+      <div class="stat-card" style="color:var(--success)"><div class="stat-icon" style="background:var(--success-light)">💵</div><div class="stat-info"><div class="stat-value" id="statRevenue">₹0</div><div class="stat-label">Total Revenue</div></div></div>
+      <div class="stat-card" style="color:var(--primary)"><div class="stat-icon" style="background:var(--primary-light)">🚗</div><div class="stat-info"><div class="stat-value" id="statVehicles">0</div><div class="stat-label">Registered Fleet</div></div></div>
+      <div class="stat-card" style="color:var(--purple)"><div class="stat-icon" style="background:var(--purple-light)">👥</div><div class="stat-info"><div class="stat-value" id="statUsers">0</div><div class="stat-label">Active Users</div></div></div>
+      <div class="stat-card" style="color:var(--danger)"><div class="stat-icon" style="background:var(--danger-light)">⚠️</div><div class="stat-info"><div class="stat-value" id="statLowStock">0</div><div class="stat-label">Low Stock Alerts</div></div></div>
+    </div>
+
+    <!-- REVENUE & ACTIVITY SUMMARY -->
+    <div class="grid-2 mb-6">
+      <!-- Recent Transactions -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">💳 Recent Payments & Invoices</h3>
+          <button class="btn btn-sm btn-outline-primary" onclick="switchView('financials')">View All</button>
+        </div>
+        <div id="recentTransactionsWidget" class="card-body p-0"></div>
+      </div>
+
+      <!-- Workshop Throughput / Quick Insights -->
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">⚡ Workshop Status Snapshot</h3></div>
+        <div class="card-body">
+          <div style="display:flex;flex-direction:column;gap:14px" id="workshopHealthMetrics"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP MECHANIC PERFORMANCE -->
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">👷 Staff & Mechanic Workload Distribution</h3></div>
+      <div class="table-container">
+        <table class="table">
+          <thead><tr><th>Technician</th><th>Specialization</th><th>Experience</th><th>Rating</th><th>Active Jobs</th><th>Status</th></tr></thead>
+          <tbody id="mechanicPerformanceBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORTS & ANALYTICS -->
+  <div class="view" id="view-reports">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div><h1 class="page-title">Reports & Business Analytics</h1><p class="page-subtitle">Exportable metrics, revenue breakdowns, and performance logs</p></div>
+        <button class="btn btn-primary" onclick="exportReportCSV()">📥 Export CSV Report</button>
+      </div>
+    </div>
+    <div class="grid-3 mb-6">
+      <div class="card p-4">
+        <div class="text-muted" style="font-size:0.85rem">Completed Jobs</div>
+        <div style="font-size:1.8rem;font-weight:700;color:var(--primary)" id="repCompletedJobs">0</div>
+        <div style="font-size:0.8rem;color:var(--text-secondary)">All-time vehicle repairs closed</div>
+      </div>
+      <div class="card p-4">
+        <div class="text-muted" style="font-size:0.85rem">Average Invoice Value</div>
+        <div style="font-size:1.8rem;font-weight:700;color:var(--success)" id="repAvgInvoice">₹0</div>
+        <div style="font-size:0.8rem;color:var(--text-secondary)">Per service ticket</div>
+      </div>
+      <div class="card p-4">
+        <div class="text-muted" style="font-size:0.85rem">Customer Satisfaction</div>
+        <div style="font-size:1.8rem;font-weight:700;color:var(--warning)" id="repAvgRating">⭐ 4.9</div>
+        <div style="font-size:0.8rem;color:var(--text-secondary)">Based on verified reviews</div>
+      </div>
+    </div>
+
+    <div class="card mb-6">
+      <div class="card-header"><h3 class="card-title">📊 Revenue Breakdown By Service Category</h3></div>
+      <div class="card-body" id="categoryRevenueBars"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h3 class="card-title">💬 Customer Reviews & Feedback Log</h3></div>
+      <div class="table-container">
+        <table class="table">
+          <thead><tr><th>Customer</th><th>Job Reference</th><th>Rating</th><th>Feedback Remarks</th><th>Date</th></tr></thead>
+          <tbody id="customerFeedbackBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- USER MANAGEMENT -->
+  <div class="view" id="view-users">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div><h1 class="page-title">User Accounts Management</h1><p class="page-subtitle">Manage customer, advisor, mechanic and administrator accounts</p></div>
+        <button class="btn btn-primary" onclick="openAddUserModal()">+ Add New User</button>
+      </div>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="userSearch" class="form-control" placeholder="Search by name, email, phone…"></div>
+      <select id="userRoleFilter" class="form-control form-select" style="max-width:180px">
+        <option value="">All Roles</option>
+        <option value="customer">Customer</option>
+        <option value="advisor">Service Advisor</option>
+        <option value="mechanic">Mechanic</option>
+        <option value="admin">Administrator</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="table-container">
+        <table class="table">
+          <thead><tr><th>User ID</th><th>Name</th><th>Email / Phone</th><th>Role</th><th>Registered</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="usersTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- VEHICLES FLEET -->
+  <div class="view" id="view-vehicles">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div><h1 class="page-title">Registered Vehicle Fleet</h1><p class="page-subtitle">All customer vehicles cataloged in the system</p></div>
+      </div>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="vehicleSearch" class="form-control" placeholder="Search plate, model, customer…"></div>
+      <select id="vehicleTypeFilter" class="form-control form-select" style="max-width:180px">
+        <option value="">All Types</option>
+        <option>Hatchback</option>
+        <option>Sedan</option>
+        <option>SUV</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="table-container">
+        <table class="table">
+          <thead><tr><th>Plate No</th><th>Model</th><th>Type / Fuel</th><th>Owner</th><th>Mileage</th><th>History</th></tr></thead>
+          <tbody id="fleetTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARTS & INVENTORY -->
+  <div class="view" id="view-inventory">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div><h1 class="page-title">Spare Parts & Inventory Management</h1><p class="page-subtitle">Track workshop stock levels, re-order thresholds, and pricing</p></div>
+        <button class="btn btn-primary" onclick="openAddPartModal()">+ Add New Part</button>
+      </div>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="invSearch" class="form-control" placeholder="Search parts, category…"></div>
+      <select id="invStockFilter" class="form-control form-select" style="max-width:180px">
+        <option value="">All Stock Levels</option>
+        <option value="In Stock">In Stock</option>
+        <option value="Low Stock">Low Stock</option>
+        <option value="Out of Stock">Out of Stock</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="table-container">
+        <table class="table">
+          <thead><tr><th>Part ID</th><th>Item Name</th><th>Category</th><th>Quantity</th><th>Min Stock</th><th>Unit Price</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="inventoryTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES CATALOG -->
+  <div class="view" id="view-services">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div><h1 class="page-title">Service Packages Catalog</h1><p class="page-subtitle">Configure maintenance packages, standard pricing and duration</p></div>
+        <button class="btn btn-primary" onclick="openAddServiceModal()">+ Add Service Package</button>
+      </div>
+    </div>
+    <div class="grid-3" id="adminServicesGrid"></div>
+  </div>
+
+  <!-- INVOICES & BILLING -->
+  <div class="view" id="view-financials">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div><h1 class="page-title">Invoices & Financial Audit</h1><p class="page-subtitle">Real-time payment settlements and customer invoices</p></div>
+      </div>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="billingSearch" class="form-control" placeholder="Search invoice, customer…"></div>
+      <select id="billingStatusFilter" class="form-control form-select" style="max-width:180px">
+        <option value="">All Statuses</option>
+        <option value="Paid">Paid</option>
+        <option value="Unpaid">Unpaid</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="table-container">
+        <table class="table">
+          <thead><tr><th>Invoice ID</th><th>Customer</th><th>Vehicle</th><th>Created Date</th><th>Subtotal</th><th>GST (18%)</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="adminBillingBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS -->
+  <div class="view" id="view-notifications">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <h1 class="page-title">System & Administrative Alerts</h1>
+        <button class="btn btn-outline-secondary btn-sm" id="markAllReadBtn">✓ Mark All Read</button>
+      </div>
+    </div>
+    <div id="adminNotificationsContainer"></div>
+  </div>
+
+  <!-- SETTINGS & DATA MANAGEMENT -->
+  <div class="view" id="view-settings">
+    <div class="page-header"><h1 class="page-title">System Settings & Data Control</h1></div>
+    <div class="grid-2">
+      <!-- General Settings -->
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">Workshop Configuration</h3></div>
+        <div class="card-body">
+          <form id="settingsForm">
+            <div class="form-group"><label class="form-label">Service Center Name</label><input type="text" id="cfg-name" class="form-control" value="VSMS Central Auto Workshop"></div>
+            <div class="form-group"><label class="form-label">Contact Email</label><input type="email" id="cfg-email" class="form-control" value="support@vsms.com"></div>
+            <div class="form-group"><label class="form-label">Support Helpline</label><input type="tel" id="cfg-phone" class="form-control" value="+91 98000 12345"></div>
+            <div class="form-group"><label class="form-label">Applicable Tax (GST %)</label><input type="number" id="cfg-tax" class="form-control" value="18"></div>
+            <button type="submit" class="btn btn-primary">Save Settings</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Factory Reset / Seed Tool -->
+      <div class="card" style="border-left:4px solid var(--danger)">
+        <div class="card-header"><h3 class="card-title">⚠️ Data Management</h3></div>
+        <div class="card-body">
+          <p style="font-size:0.9rem;color:var(--text-secondary)">Reset all localStorage state to the original sample dataset for college demonstration or testing fresh flows.</p>
+          <div style="display:flex;gap:10px;margin-top:20px">
+            <button class="btn btn-danger" id="factoryResetBtn">🔄 Reset Database to Demo Seeds</button>
+            <button class="btn btn-outline-secondary" onclick="exportDataJson()">📤 Export Data Backup</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ADD/EDIT USER MODAL -->
+<div class="modal-overlay" id="userModal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="userModalTitle">Add New User</h3><button class="modal-close" onclick="Modal.close('userModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-user-id">
+      <div class="form-group"><label class="form-label">Full Name</label><input type="text" id="usr-name" class="form-control" placeholder="e.g. John Doe" required></div>
+      <div class="form-group"><label class="form-label">Email Address</label><input type="email" id="usr-email" class="form-control" placeholder="user@example.com" required></div>
+      <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" id="usr-phone" class="form-control" placeholder="9876543210" required></div>
+      <div class="form-group">
+        <label class="form-label">Role</label>
+        <select id="usr-role" class="form-control form-select">
+          <option value="customer">Customer</option>
+          <option value="advisor">Service Advisor</option>
+          <option value="mechanic">Mechanic</option>
+          <option value="admin">Administrator</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Password</label><input type="password" id="usr-password" class="form-control" placeholder="Set user password" value="password123"></div>
+      <div class="form-group">
+        <label class="form-label">Account Status</label>
+        <select id="usr-status" class="form-control form-select">
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('userModal')">Cancel</button>
+      <button class="btn btn-primary" id="saveUserBtn">Save User</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT PART MODAL -->
+<div class="modal-overlay" id="partModal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="partModalTitle">Add Spare Part</h3><button class="modal-close" onclick="Modal.close('partModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-part-id">
+      <div class="form-group"><label class="form-label">Part Name</label><input type="text" id="prt-name" class="form-control" placeholder="e.g. Engine Oil 5W30" required></div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select id="prt-category" class="form-control form-select">
+          <option>Fluids</option>
+          <option>Filters</option>
+          <option>Brakes</option>
+          <option>AC</option>
+          <option>Electrical</option>
+          <option>Engine</option>
+          <option>Tyres</option>
+          <option>Body</option>
+        </select>
+      </div>
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">Initial Quantity</label><input type="number" id="prt-qty" class="form-control" min="0" value="10"></div>
+        <div class="form-group"><label class="form-label">Min Stock Threshold</label><input type="number" id="prt-min" class="form-control" min="1" value="5"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Unit Price (₹)</label><input type="number" id="prt-price" class="form-control" min="0" value="500"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('partModal')">Cancel</button>
+      <button class="btn btn-primary" id="savePartBtn">Save Part</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT SERVICE MODAL -->
+<div class="modal-overlay" id="serviceModal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="serviceModalTitle">Add Service Package</h3><button class="modal-close" onclick="Modal.close('serviceModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-svc-id">
+      <div class="form-group"><label class="form-label">Service Title</label><input type="text" id="svc-name" class="form-control" placeholder="e.g. Full Brake Overhaul" required></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea id="svc-desc" class="form-control" rows="2" placeholder="Brief service summary..."></textarea></div>
+      <div class="grid-2">
+        <div class="form-group"><label class="form-label">Base Price (₹)</label><input type="number" id="svc-price" class="form-control" min="0" value="1500"></div>
+        <div class="form-group"><label class="form-label">Duration (Hours)</label><input type="number" id="svc-duration" class="form-control" min="1" value="2"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select id="svc-category" class="form-control form-select">
+          <option>Maintenance</option><option>Fluid</option><option>Safety</option><option>Repair</option><option>Comfort</option><option>Electrical</option><option>Tyres</option><option>Inspection</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('serviceModal')">Cancel</button>
+      <button class="btn btn-primary" id="saveServiceBtn">Save Service</button>
+    </div>
+  </div>
+</div>
+
+<!-- INVOICE PREVIEW MODAL -->
+<div class="modal-overlay" id="invoiceModal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>Invoice View</h3><button class="modal-close" onclick="Modal.close('invoiceModal')">✕</button></div>
+    <div class="modal-body" id="invoiceModalBody"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('invoiceModal')">Close</button>
+      <button class="btn btn-primary" onclick="printElement('invoiceModalBody')">🖨️ Print Invoice</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

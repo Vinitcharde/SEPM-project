@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="VSMS Customer Dashboard – Manage your vehicles, book services, and track repairs.">
+  <title>Customer Dashboard – VSMS</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<!-- Mobile Overlay -->
+<div class="mobile-overlay" id="mobileOverlay" aria-hidden="true"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar" role="navigation" aria-label="Customer navigation">
+  <a href="index.html" class="sidebar-logo" aria-label="VSMS Home">
+    <div class="sidebar-logo-icon" aria-hidden="true">🚗</div>
+    <div class="sidebar-logo-text">
+      <h2>VSMS</h2>
+      <span>Vehicle Service MS</span>
+    </div>
+  </a>
+
+  <div class="sidebar-user">
+    <div class="avatar" id="sidebarAvatar" aria-hidden="true">CU</div>
+    <div class="sidebar-user-info">
+      <div class="sidebar-user-name" id="sidebarName">Customer</div>
+      <div class="sidebar-user-role">Customer Account</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav" aria-label="Dashboard sections">
+    <div class="nav-section-title">Overview</div>
+    <button class="nav-item active" data-view="dashboard"       data-tooltip="Dashboard">
+      <span class="nav-icon" aria-hidden="true">📊</span>
+      <span class="nav-label">Dashboard</span>
+    </button>
+
+    <div class="nav-section-title">Vehicles</div>
+    <button class="nav-item" data-view="vehicles"     data-tooltip="My Vehicles">
+      <span class="nav-icon" aria-hidden="true">🚗</span>
+      <span class="nav-label">My Vehicles</span>
+    </button>
+
+    <div class="nav-section-title">Services</div>
+    <button class="nav-item" data-view="book-service" data-tooltip="Book Service">
+      <span class="nav-icon" aria-hidden="true">📅</span>
+      <span class="nav-label">Book Service</span>
+    </button>
+    <button class="nav-item" data-view="appointments" data-tooltip="Appointments">
+      <span class="nav-icon" aria-hidden="true">🗓️</span>
+      <span class="nav-label">Appointments</span>
+    </button>
+    <button class="nav-item" data-view="tracking"     data-tooltip="Service Tracking">
+      <span class="nav-icon" aria-hidden="true">📍</span>
+      <span class="nav-label">Service Tracking</span>
+    </button>
+    <button class="nav-item" data-view="history"      data-tooltip="Service History">
+      <span class="nav-icon" aria-hidden="true">📋</span>
+      <span class="nav-label">Service History</span>
+    </button>
+
+    <div class="nav-section-title">Finance</div>
+    <button class="nav-item" data-view="invoices"     data-tooltip="Invoices">
+      <span class="nav-icon" aria-hidden="true">🧾</span>
+      <span class="nav-label">Invoices</span>
+    </button>
+    <button class="nav-item" data-view="payments"     data-tooltip="Payments">
+      <span class="nav-icon" aria-hidden="true">💳</span>
+      <span class="nav-label">Payments</span>
+    </button>
+
+    <div class="nav-section-title">Account</div>
+    <button class="nav-item" data-view="notifications" data-tooltip="Notifications">
+      <span class="nav-icon" aria-hidden="true">🔔</span>
+      <span class="nav-label">Notifications</span>
+      <span class="nav-badge" id="sidebarNotifBadge">0</span>
+    </button>
+    <button class="nav-item" data-view="feedback"     data-tooltip="Feedback">
+      <span class="nav-icon" aria-hidden="true">⭐</span>
+      <span class="nav-label">Feedback</span>
+    </button>
+    <button class="nav-item" data-view="profile"      data-tooltip="Profile">
+      <span class="nav-icon" aria-hidden="true">👤</span>
+      <span class="nav-label">Profile</span>
+    </button>
+    <button class="nav-item" data-view="settings"     data-tooltip="Settings">
+      <span class="nav-icon" aria-hidden="true">⚙️</span>
+      <span class="nav-label">Settings</span>
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="nav-item" id="logoutBtn" data-tooltip="Logout">
+      <span class="nav-icon" aria-hidden="true">🚪</span>
+      <span class="nav-label">Logout</span>
+    </button>
+  </div>
+</aside>
+
+<!-- ===== TOP NAV ===== -->
+<header class="topnav" id="topnav" role="banner">
+  <button class="topnav-toggle" id="sidebarToggle" aria-label="Toggle sidebar" aria-expanded="true">☰</button>
+
+  <div class="topnav-search" role="search">
+    <span class="search-icon" aria-hidden="true">🔍</span>
+    <input type="text" id="globalSearch" placeholder="Search vehicles, appointments…" aria-label="Global search">
+  </div>
+
+  <div class="topnav-actions">
+    <button class="topnav-btn" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">🌙</button>
+    <div class="dropdown" style="position:relative">
+      <button class="topnav-btn" id="notifBtn" aria-label="Notifications" aria-haspopup="true">
+        🔔
+        <span class="topnav-notif-count" id="notifCount" aria-label="unread notifications">0</span>
+      </button>
+      <div class="notif-panel" id="notifPanel" role="dialog" aria-label="Notifications">
+        <div class="notif-header">
+          <h4 style="margin:0">Notifications</h4>
+          <button class="btn btn-sm btn-ghost" id="markAllRead">Mark all read</button>
+        </div>
+        <div class="notif-list" id="notifList"></div>
+        <div class="notif-footer">
+          <button class="btn btn-sm btn-outline-primary" onclick="switchView('notifications')">View All</button>
+        </div>
+      </div>
+    </div>
+    <div class="dropdown">
+      <button class="topnav-user" id="userMenuBtn" aria-haspopup="true" aria-expanded="false">
+        <div class="avatar" id="topnavAvatar" aria-hidden="true">CU</div>
+        <div class="topnav-user-info">
+          <div class="topnav-user-name" id="topnavName">Customer</div>
+          <div class="topnav-user-role">Customer</div>
+        </div>
+        <span aria-hidden="true">▾</span>
+      </button>
+      <div class="dropdown-menu" id="userMenu" role="menu">
+        <a href="#" onclick="switchView('profile')" role="menuitem">👤 My Profile</a>
+        <a href="#" onclick="switchView('settings')" role="menuitem">⚙️ Settings</a>
+        <div class="dropdown-divider"></div>
+        <button onclick="Auth.logout()" role="menuitem">🚪 Logout</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main-content" id="mainContent" role="main">
+
+  <!-- ==================== DASHBOARD VIEW ==================== -->
+  <div class="view active" id="view-dashboard">
+    <div class="page-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <span>Customer</span><span class="breadcrumb-sep">›</span><span class="current">Dashboard</span>
+      </nav>
+      <div class="page-header-flex">
+        <div>
+          <h1 class="page-title">Welcome back, <span id="dashWelcomeName">Customer</span>! 👋</h1>
+          <p class="page-subtitle">Here's an overview of your vehicle services</p>
+        </div>
+        <button class="btn btn-primary" onclick="switchView('book-service')" id="quickBookBtn">📅 Book Service</button>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid-stat mb-6" role="list" aria-label="Dashboard statistics">
+      <div class="stat-card" style="color:var(--primary)" role="listitem">
+        <div class="stat-icon" style="background:var(--primary-light)" aria-hidden="true">🚗</div>
+        <div class="stat-info">
+          <div class="stat-value" id="statVehicles">0</div>
+          <div class="stat-label">My Vehicles</div>
+        </div>
+      </div>
+      <div class="stat-card" style="color:var(--warning)" role="listitem">
+        <div class="stat-icon" style="background:var(--warning-light)" aria-hidden="true">📅</div>
+        <div class="stat-info">
+          <div class="stat-value" id="statUpcoming">0</div>
+          <div class="stat-label">Upcoming Appointments</div>
+        </div>
+      </div>
+      <div class="stat-card" style="color:var(--info)" role="listitem">
+        <div class="stat-icon" style="background:var(--info-light)" aria-hidden="true">🔧</div>
+        <div class="stat-info">
+          <div class="stat-value" id="statActive">0</div>
+          <div class="stat-label">Active Services</div>
+        </div>
+      </div>
+      <div class="stat-card" style="color:var(--success)" role="listitem">
+        <div class="stat-icon" style="background:var(--success-light)" aria-hidden="true">✅</div>
+        <div class="stat-info">
+          <div class="stat-value" id="statCompleted">0</div>
+          <div class="stat-label">Completed Services</div>
+        </div>
+      </div>
+      <div class="stat-card" style="color:var(--danger)" role="listitem">
+        <div class="stat-icon" style="background:var(--danger-light)" aria-hidden="true">💳</div>
+        <div class="stat-info">
+          <div class="stat-value" id="statPending">0</div>
+          <div class="stat-label">Pending Payments</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-header mb-3">
+      <h2 class="section-title">Quick Actions</h2>
+    </div>
+    <div class="quick-actions mb-6" role="list" aria-label="Quick actions">
+      <button class="quick-action-card" onclick="switchView('book-service')" role="listitem">
+        <div class="quick-action-icon" aria-hidden="true">📅</div>
+        <div class="quick-action-label">Book Service</div>
+      </button>
+      <button class="quick-action-card" onclick="switchView('vehicles')" role="listitem">
+        <div class="quick-action-icon" aria-hidden="true">🚗</div>
+        <div class="quick-action-label">Add Vehicle</div>
+      </button>
+      <button class="quick-action-card" onclick="switchView('tracking')" role="listitem">
+        <div class="quick-action-icon" aria-hidden="true">📍</div>
+        <div class="quick-action-label">Track Service</div>
+      </button>
+      <button class="quick-action-card" onclick="switchView('invoices')" role="listitem">
+        <div class="quick-action-icon" aria-hidden="true">🧾</div>
+        <div class="quick-action-label">View Invoices</div>
+      </button>
+      <button class="quick-action-card" onclick="switchView('history')" role="listitem">
+        <div class="quick-action-icon" aria-hidden="true">📋</div>
+        <div class="quick-action-label">Service History</div>
+      </button>
+      <button class="quick-action-card" onclick="switchView('feedback')" role="listitem">
+        <div class="quick-action-icon" aria-hidden="true">⭐</div>
+        <div class="quick-action-label">Leave Feedback</div>
+      </button>
+    </div>
+
+    <!-- Recent Appointments + Vehicles -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Recent Appointments</h3>
+            <p class="card-subtitle">Your latest service bookings</p>
+          </div>
+          <button class="btn btn-sm btn-outline-primary" onclick="switchView('appointments')">View All</button>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div id="recentAppointments"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">My Vehicles</h3>
+            <p class="card-subtitle">Registered vehicles</p>
+          </div>
+          <button class="btn btn-sm btn-primary" onclick="switchView('vehicles')">+ Add Vehicle</button>
+        </div>
+        <div class="card-body" style="padding:0">
+          <div id="dashboardVehicles"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== VEHICLES VIEW ==================== -->
+  <div class="view" id="view-vehicles">
+    <div class="page-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><span>Customer</span><span class="breadcrumb-sep">›</span><span class="current">My Vehicles</span></nav>
+      <div class="page-header-flex">
+        <div>
+          <h1 class="page-title">My Vehicles</h1>
+          <p class="page-subtitle">Manage your registered vehicles</p>
+        </div>
+        <button class="btn btn-primary" id="addVehicleBtn">🚗 Add Vehicle</button>
+      </div>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input type="text" id="vehicleSearch" class="form-control" placeholder="Search by registration, model…" aria-label="Search vehicles">
+      </div>
+    </div>
+    <div id="vehiclesContainer"></div>
+  </div>
+
+  <!-- ==================== BOOK SERVICE VIEW ==================== -->
+  <div class="view" id="view-book-service">
+    <div class="page-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><span>Customer</span><span class="breadcrumb-sep">›</span><span class="current">Book Service</span></nav>
+      <h1 class="page-title">Book a Service</h1>
+      <p class="page-subtitle">Schedule your vehicle service appointment</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">📅 New Appointment</h3></div>
+        <div class="card-body">
+          <form id="bookingForm" novalidate aria-label="Service booking form">
+            <div class="form-group">
+              <label class="form-label" for="book-vehicle">Select Vehicle <span class="required">*</span></label>
+              <select id="book-vehicle" name="vehicleId" class="form-control form-select" required aria-required="true">
+                <option value="">-- Select your vehicle --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="book-service">Select Service <span class="required">*</span></label>
+              <select id="book-service" name="serviceId" class="form-control form-select" required aria-required="true">
+                <option value="">-- Select service type --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="book-center">Service Center <span class="required">*</span></label>
+              <select id="book-center" name="serviceCenter" class="form-control form-select" required aria-required="true">
+                <option value="">-- Select center --</option>
+                <option value="Bangalore Main">Bangalore Main Center</option>
+                <option value="Bangalore East">Bangalore East Center</option>
+                <option value="Chennai Branch">Chennai Branch</option>
+                <option value="Hyderabad Branch">Hyderabad Branch</option>
+                <option value="Mumbai Branch">Mumbai Branch</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="book-date">Preferred Date <span class="required">*</span></label>
+                <input type="date" id="book-date" name="date" class="form-control" required aria-required="true">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="book-time">Preferred Time <span class="required">*</span></label>
+                <select id="book-time" name="time" class="form-control form-select" required aria-required="true">
+                  <option value="">-- Select time --</option>
+                  <option value="09:00">09:00 AM</option>
+                  <option value="10:00">10:00 AM</option>
+                  <option value="11:00">11:00 AM</option>
+                  <option value="12:00">12:00 PM</option>
+                  <option value="14:00">02:00 PM</option>
+                  <option value="15:00">03:00 PM</option>
+                  <option value="16:00">04:00 PM</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="book-notes">Problem Description</label>
+              <textarea id="book-notes" name="notes" class="form-control" rows="3" placeholder="Describe the issue or reason for service…" aria-label="Problem description"></textarea>
+            </div>
+            <div id="servicePreview" class="alert alert-info hidden" style="margin-bottom:16px"></div>
+            <button type="submit" class="btn btn-primary btn-block btn-lg" id="bookSubmitBtn">📅 Confirm Booking</button>
+          </form>
+        </div>
+      </div>
+      <div>
+        <div class="card mb-4">
+          <div class="card-header"><h3 class="card-title">💡 Available Services</h3></div>
+          <div class="card-body" style="padding:0">
+            <div id="servicesListPreview"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">📋 Booking Guidelines</h3></div>
+          <div class="card-body">
+            <ul style="display:flex;flex-direction:column;gap:10px;font-size:.875rem;color:var(--text-secondary)">
+              <li>✅ Book at least 1 day in advance</li>
+              <li>✅ Vehicle must be registered in your account</li>
+              <li>✅ You'll receive a confirmation notification</li>
+              <li>✅ Free rescheduling up to 24h before appointment</li>
+              <li>✅ Bring your vehicle on time for check-in</li>
+              <li>✅ Emergency services available – call our hotline</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== APPOINTMENTS VIEW ==================== -->
+  <div class="view" id="view-appointments">
+    <div class="page-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><span>Customer</span><span class="breadcrumb-sep">›</span><span class="current">Appointments</span></nav>
+      <div class="page-header-flex">
+        <div>
+          <h1 class="page-title">My Appointments</h1>
+          <p class="page-subtitle">View and manage your service appointments</p>
+        </div>
+        <button class="btn btn-primary" onclick="switchView('book-service')">+ Book New</button>
+      </div>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input type="text" id="aptSearch" class="form-control" placeholder="Search appointments…" aria-label="Search appointments">
+      </div>
+      <select id="aptStatusFilter" class="form-control form-select" style="max-width:160px" aria-label="Filter by status">
+        <option value="">All Status</option>
+        <option value="Pending">Pending</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="Checked-In">Checked-In</option>
+        <option value="Completed">Completed</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="table-container">
+        <table class="table" aria-label="Appointments table">
+          <thead>
+            <tr>
+              <th scope="col">Appt ID</th>
+              <th scope="col">Vehicle</th>
+              <th scope="col">Service</th>
+              <th scope="col">Date & Time</th>
+              <th scope="col">Center</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="appointmentsTableBody"></tbody>
+        </table>
+      </div>
+      <div id="aptPagination" class="card-footer"></div>
+    </div>
+  </div>
+
+  <!-- ==================== TRACKING VIEW ==================== -->
+  <div class="view" id="view-tracking">
+    <div class="page-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><span>Customer</span><span class="breadcrumb-sep">›</span><span class="current">Service Tracking</span></nav>
+      <h1 class="page-title">Service Tracking</h1>
+      <p class="page-subtitle">Track your vehicle's service progress in real-time</p>
+    </div>
+    <div id="trackingContainer"></div>
+  </div>
+
+  <!-- ==================== HISTORY VIEW ==================== -->
+  <div class="view" id="view-history">
+    <div class="page-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><span>Customer</span><span class="breadcrumb-sep">›</span><span class="current">Service History</span></nav>
+      <h1 class="page-title">Service History</h1>
+      <p class="page-subtitle">View all past services for your vehicles</p>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <input type="text" id="histSearch" class="form-control" placeholder="Search history…" aria-label="Search history">
+      </div>
+      <select id="histVehicleFilter" class="form-control form-select" style="max-width:200px" aria-label="Filter by vehicle">
+        <option value="">All Vehicles</option>
+      </select>
+      <input type="date" id="histDateFrom" class="form-control" style="max-width:150px" aria-label="From date">
+      <input type="date" id="histDateTo"   class="form-control" style="max-width:150px" aria-label="To date">
+    </div>
+    <div class="card">
+      <div class="table-container">
+        <table class="table" aria-label="Service history table">
+          <thead>
+            <tr>
+              <th scope="col">Job Card</th>
+              <th scope="col">Vehicle</th>
+              <th scope="col">Service</th>
+              <th scope="col">Date</th>
+              <th scope="col">Mechanic</th>
+              <th scope="col">Cost</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody"></tbody>
+        </table>
+      </div>
+      <div id="histPagination" class="card-footer"></div>
+    </div>
+  </div>
+
+  <!-- ==================== INVOICES VIEW ==================== -->
+  <div class="view" id="view-invoices">
+    <div class="page-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><span>Customer</span><span class="breadcrumb-sep">›</span><span class="current">Invoices</span></nav>
+      <h1 class="page-title">Invoices</h1>
+      <p class="page-subtitle">View and download your service invoices</p>
+    </div>
+    <div id="invoicesContainer"></div>
+  </div>
+
+  <!-- ==================== PAYMENTS VIEW ==================== -->
+  <div class="view" id="view-payments">
+    <div class="page-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><span>Customer</span><span class="breadcrumb-sep">›</span><span class="current">Payments</span></nav>
+      <h1 class="page-title">Payments</h1>
+      <p class="page-subtitle">Your payment history and pending dues</p>
+    </div>
+    <div id="paymentsContainer"></div>
+  </div>
+
+  <!-- ==================== NOTIFICATIONS VIEW ==================== -->
+  <div class="view" id="view-notifications">
+    <div class="page-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><span>Customer</span><span class="breadcrumb-sep">›</span><span class="current">Notifications</span></nav>
+      <div class="page-header-flex">
+        <h1 class="page-title">Notifications</h1>
+        <button class="btn btn-outline-secondary btn-sm" id="markAllReadBtn">✓ Mark All Read</button>
+      </div>
+    </div>
+    <div id="notificationsContainer"></div>
+  </div>
+
+  <!-- ==================== FEEDBACK VIEW ==================== -->
+  <div class="view" id="view-feedback">
+    <div class="page-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><span>Customer</span><span class="breadcrumb-sep">›</span><span class="current">Feedback</span></nav>
+      <h1 class="page-title">Feedback & Ratings</h1>
+      <p class="page-subtitle">Share your experience with our service</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">⭐ Submit Feedback</h3></div>
+        <div class="card-body">
+          <form id="feedbackForm" novalidate aria-label="Feedback form">
+            <div class="form-group">
+              <label class="form-label" for="fb-appointment">Select Appointment <span class="required">*</span></label>
+              <select id="fb-appointment" name="appointmentId" class="form-control form-select" required aria-required="true">
+                <option value="">-- Select completed appointment --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Rating <span class="required">*</span></label>
+              <div class="star-rating" id="starRating" role="radiogroup" aria-label="Service rating">
+                <button type="button" data-star="1" aria-label="1 star">⭐</button>
+                <button type="button" data-star="2" aria-label="2 stars">⭐</button>
+                <button type="button" data-star="3" aria-label="3 stars">⭐</button>
+                <button type="button" data-star="4" aria-label="4 stars">⭐</button>
+                <button type="button" data-star="5" aria-label="5 stars">⭐</button>
+              </div>
+              <input type="hidden" id="fb-rating" name="rating" value="0">
+              <div class="form-hint" id="ratingText">Click to rate</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="fb-comment">Your Review <span class="required">*</span></label>
+              <textarea id="fb-comment" name="comment" class="form-control" rows="4" placeholder="Tell us about your experience…" required aria-required="true"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="fbSubmitBtn">Submit Feedback</button>
+          </form>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">📝 My Reviews</h3></div>
+        <div id="myFeedbackList" style="padding:0"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PROFILE VIEW ==================== -->
+  <div class="view" id="view-profile">
+    <div class="page-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><span>Customer</span><span class="breadcrumb-sep">›</span><span class="current">Profile</span></nav>
+      <h1 class="page-title">My Profile</h1>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">👤 Personal Information</h3></div>
+        <div class="card-body">
+          <div style="text-align:center;margin-bottom:24px">
+            <div class="avatar avatar-xl" id="profileAvatar" style="margin:0 auto" aria-hidden="true">CU</div>
+            <h3 id="profileName" style="margin-top:12px">Customer</h3>
+            <p class="text-muted" id="profileEmail">email@example.com</p>
+            <span class="badge badge-success mt-2">Active Account</span>
+          </div>
+          <form id="profileForm" novalidate aria-label="Profile update form">
+            <div class="form-group">
+              <label class="form-label" for="prof-name">Full Name <span class="required">*</span></label>
+              <input type="text" id="prof-name" name="name" class="form-control" required aria-required="true">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prof-email">Email <span class="required">*</span></label>
+              <input type="email" id="prof-email" name="email" class="form-control" required aria-required="true">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prof-phone">Phone <span class="required">*</span></label>
+              <input type="tel" id="prof-phone" name="phone" class="form-control" required aria-required="true">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="prof-address">Address</label>
+              <textarea id="prof-address" name="address" class="form-control" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" id="profileSaveBtn">Save Changes</button>
+          </form>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">🔐 Change Password</h3></div>
+        <div class="card-body">
+          <form id="passwordForm" novalidate aria-label="Change password form">
+            <div class="form-group">
+              <label class="form-label" for="pw-current">Current Password <span class="required">*</span></label>
+              <input type="password" id="pw-current" name="current" class="form-control" required aria-required="true" placeholder="Enter current password">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pw-new">New Password <span class="required">*</span></label>
+              <input type="password" id="pw-new" name="newPass" class="form-control" required aria-required="true" placeholder="Minimum 8 characters">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="pw-confirm">Confirm New Password <span class="required">*</span></label>
+              <input type="password" id="pw-confirm" name="confirmPass" class="form-control" required aria-required="true" placeholder="Re-enter new password">
+            </div>
+            <button type="submit" class="btn btn-warning">Update Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SETTINGS VIEW ==================== -->
+  <div class="view" id="view-settings">
+    <div class="page-header">
+      <nav class="breadcrumb" aria-label="Breadcrumb"><span>Customer</span><span class="breadcrumb-sep">›</span><span class="current">Settings</span></nav>
+      <h1 class="page-title">Settings</h1>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">🎨 Appearance</h3></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="font-semibold">Dark Mode</div>
+              <div class="text-sm text-muted">Switch between light and dark theme</div>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle dark mode">
+              <input type="checkbox" id="darkModeSwitch">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="divider"></div>
+          <div>
+            <div class="font-semibold mb-2">Language</div>
+            <select class="form-control form-select" id="langSelect" aria-label="Select language">
+              <option value="en">English</option>
+              <option value="hi">हिन्दी (Hindi)</option>
+              <option value="ta">தமிழ் (Tamil)</option>
+              <option value="te">తెలుగు (Telugu)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">🔔 Notification Preferences</h3></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="text-sm font-semibold">Appointment Reminders</div>
+            <input type="checkbox" id="notif-appointment" checked aria-label="Appointment reminders">
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="text-sm font-semibold">Repair Status Updates</div>
+            <input type="checkbox" id="notif-status" checked aria-label="Status updates">
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="text-sm font-semibold">Invoice Notifications</div>
+            <input type="checkbox" id="notif-invoice" checked aria-label="Invoice notifications">
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="text-sm font-semibold">Payment Confirmations</div>
+            <input type="checkbox" id="notif-payment" checked aria-label="Payment confirmations">
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="text-sm font-semibold">Service Reminders</div>
+            <input type="checkbox" id="notif-reminder" checked aria-label="Service reminders">
+          </div>
+          <button class="btn btn-primary btn-sm" id="saveSettingsBtn">Save Preferences</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== MODALS ===== -->
+
+<!-- Add/Edit Vehicle Modal -->
+<div class="modal-overlay" id="vehicleModal" role="dialog" aria-modal="true" aria-labelledby="vehicleModalTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="vehicleModalTitle">Add Vehicle</h3>
+      <button class="modal-close" onclick="Modal.close('vehicleModal')" aria-label="Close modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <form id="vehicleForm" novalidate aria-label="Vehicle form">
+        <input type="hidden" id="vehicle-id" name="id">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="veh-reg">Registration Number <span class="required">*</span></label>
+            <input type="text" id="veh-reg" name="registrationNo" class="form-control" placeholder="KA-01-AB-1234" required aria-required="true">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="veh-model">Vehicle Model <span class="required">*</span></label>
+            <input type="text" id="veh-model" name="model" class="form-control" placeholder="e.g. Maruti Swift" required aria-required="true">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="veh-type">Vehicle Type <span class="required">*</span></label>
+            <select id="veh-type" name="type" class="form-control form-select" required aria-required="true">
+              <option value="">Select type</option>
+              <option value="Hatchback">Hatchback</option>
+              <option value="Sedan">Sedan</option>
+              <option value="SUV">SUV</option>
+              <option value="MUV">MUV</option>
+              <option value="Truck">Truck</option>
+              <option value="Van">Van</option>
+              <option value="Motorcycle">Motorcycle</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="veh-year">Manufacturing Year <span class="required">*</span></label>
+            <input type="number" id="veh-year" name="year" class="form-control" placeholder="2020" min="1990" required aria-required="true">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="veh-fuel">Fuel Type <span class="required">*</span></label>
+            <select id="veh-fuel" name="fuelType" class="form-control form-select" required aria-required="true">
+              <option value="">Select fuel type</option>
+              <option value="Petrol">Petrol</option>
+              <option value="Diesel">Diesel</option>
+              <option value="Electric">Electric</option>
+              <option value="CNG">CNG</option>
+              <option value="Hybrid">Hybrid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="veh-color">Color</label>
+            <input type="text" id="veh-color" name="color" class="form-control" placeholder="e.g. White">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="veh-mileage">Current Mileage (km)</label>
+          <input type="number" id="veh-mileage" name="mileage" class="form-control" placeholder="35000">
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('vehicleModal')">Cancel</button>
+      <button class="btn btn-primary" id="vehicleSaveBtn">Save Vehicle</button>
+    </div>
+  </div>
+</div>
+
+<!-- Appointment Detail Modal -->
+<div class="modal-overlay" id="aptDetailModal" role="dialog" aria-modal="true" aria-labelledby="aptDetailTitle">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 id="aptDetailTitle">Appointment Details</h3>
+      <button class="modal-close" onclick="Modal.close('aptDetailModal')" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" id="aptDetailContent"></div>
+  </div>
+</div>
+
+<!-- Reschedule Modal -->
+<div class="modal-overlay" id="rescheduleModal" role="dialog" aria-modal="true" aria-labelledby="rescheduleTitle">
+  <div class="modal modal-sm">
+    <div class="modal-header">
+      <h3 id="rescheduleTitle">Reschedule Appointment</h3>
+      <button class="modal-close" onclick="Modal.close('rescheduleModal')" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="reschedule-apt-id">
+      <div class="form-group">
+        <label class="form-label" for="reschedule-date">New Date <span class="required">*</span></label>
+        <input type="date" id="reschedule-date" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="reschedule-time">New Time <span class="required">*</span></label>
+        <select id="reschedule-time" class="form-control form-select" required>
+          <option value="">-- Select time --</option>
+          <option value="09:00">09:00 AM</option>
+          <option value="10:00">10:00 AM</option>
+          <option value="11:00">11:00 AM</option>
+          <option value="12:00">12:00 PM</option>
+          <option value="14:00">02:00 PM</option>
+          <option value="15:00">03:00 PM</option>
+          <option value="16:00">04:00 PM</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('rescheduleModal')">Cancel</button>
+      <button class="btn btn-primary" id="confirmReschedule">Reschedule</button>
+    </div>
+  </div>
+</div>
+
+<!-- Invoice Detail Modal -->
+<div class="modal-overlay" id="invoiceModal" role="dialog" aria-modal="true" aria-labelledby="invoiceModalTitle">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 id="invoiceModalTitle">Invoice Details</h3>
+      <button class="modal-close" onclick="Modal.close('invoiceModal')" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" id="invoiceContent"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="printElement('invoiceContent')">🖨️ Print</button>
+      <button class="btn btn-primary" id="payInvoiceBtn" onclick="openPaymentModal()">💳 Pay Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="modal-overlay" id="paymentModal" role="dialog" aria-modal="true" aria-labelledby="paymentModalTitle">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="paymentModalTitle">💳 Process Payment</h3>
+      <button class="modal-close" onclick="Modal.close('paymentModal')" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body" id="paymentContent"></div>
+  </div>
+</div>
+
+<div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/customer.js"></script>
+</body>
+</html>

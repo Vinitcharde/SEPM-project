@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sign in or create your VSMS account to manage vehicle services.">
+  <title>Login / Register – VSMS</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+
+<div class="auth-page">
+  <!-- ===== LEFT PANEL ===== -->
+  <div class="auth-left" role="complementary" aria-label="Platform information">
+    <div class="auth-brand">
+      <a href="index.html" class="auth-brand-logo" aria-label="VSMS Home">
+        <div class="auth-brand-icon" aria-hidden="true">🚗</div>
+        <div>
+          <div class="auth-brand-name">VSMS</div>
+          <div class="auth-brand-tagline">Vehicle Service Management System</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="auth-hero">
+      <h1>Your Vehicle,<br>Our Priority</h1>
+      <p>Join thousands of customers who trust VSMS for professional, transparent, and reliable vehicle servicing.</p>
+      <div class="auth-features">
+        <div class="auth-feature">
+          <div class="auth-feature-icon" aria-hidden="true">📅</div>
+          <div class="auth-feature-text">
+            <strong>Book Anytime, Anywhere</strong>
+            <span>Online booking with real-time slot availability</span>
+          </div>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon" aria-hidden="true">📍</div>
+          <div class="auth-feature-text">
+            <strong>Live Repair Tracking</strong>
+            <span>Step-by-step service progress updates</span>
+          </div>
+        </div>
+        <div class="auth-feature">
+          <div class="auth-feature-icon" aria-hidden="true">🧾</div>
+          <div class="auth-feature-text">
+            <strong>Transparent Billing</strong>
+            <span>Digital invoices with itemized breakdowns</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-bottom">
+      <div class="auth-testimonial">
+        <p>"VSMS saved me so much time. I track my car's service right from my phone — no more anxiety!"</p>
+        <div class="auth-testimonial-author">
+          <div class="auth-testimonial-avatar" aria-hidden="true">RK</div>
+          <div>
+            <div class="auth-testimonial-name">Rajesh Kumar</div>
+            <div class="auth-testimonial-title">Customer since 2024</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RIGHT PANEL ===== -->
+  <div class="auth-right">
+    <div class="auth-card">
+
+      <!-- Tabs -->
+      <div class="auth-tabs" role="tablist" aria-label="Authentication options">
+        <button class="auth-tab-btn active" id="tab-login"    role="tab" aria-selected="true"  aria-controls="login-form-wrap">Sign In</button>
+        <button class="auth-tab-btn"         id="tab-register" role="tab" aria-selected="false" aria-controls="register-form-wrap">Register</button>
+      </div>
+
+      <!-- ===== LOGIN FORM ===== -->
+      <div id="login-form-wrap" role="tabpanel" aria-labelledby="tab-login">
+        <div class="auth-card-header">
+          <h2>Welcome Back 👋</h2>
+          <p>Sign in to your VSMS account</p>
+        </div>
+
+        <!-- Quick Login Buttons -->
+        <div style="margin-bottom:16px">
+          <p class="text-sm text-muted mb-2" style="font-weight:600">🚀 Quick Demo Login:</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <button class="btn btn-sm btn-outline-primary" onclick="quickLogin('customer')" id="demo-customer">👤 Customer</button>
+            <button class="btn btn-sm btn-outline-primary" onclick="quickLogin('advisor')"  id="demo-advisor">🔧 Advisor</button>
+            <button class="btn btn-sm btn-outline-primary" onclick="quickLogin('mechanic')" id="demo-mechanic">⚙️ Mechanic</button>
+            <button class="btn btn-sm btn-outline-primary" onclick="quickLogin('admin')"    id="demo-admin">👑 Admin</button>
+          </div>
+        </div>
+
+        <div class="auth-divider"><span>or sign in with email</span></div>
+
+        <div id="login-error" class="alert alert-danger mb-3 hidden" role="alert">
+          <span>⚠️</span> <span id="login-error-msg"></span>
+        </div>
+
+        <form id="login-form" class="auth-form" novalidate aria-label="Login form">
+          <div class="form-group">
+            <label class="form-label" for="login-email">Email Address <span class="required" aria-hidden="true">*</span></label>
+            <div class="input-icon-wrap">
+              <span class="input-icon" aria-hidden="true">✉️</span>
+              <input type="email" id="login-email" name="email" class="form-control"
+                     placeholder="you@example.com" required aria-required="true" autocomplete="email">
+            </div>
+          </div>
+          <div class="form-group">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <label class="form-label" for="login-password" style="margin-bottom:0">Password <span class="required" aria-hidden="true">*</span></label>
+              <a href="#" id="forgot-link" style="font-size:.8125rem">Forgot password?</a>
+            </div>
+            <div class="input-icon-wrap" style="display:flex;align-items:center;gap:0">
+              <span class="input-icon" aria-hidden="true">🔒</span>
+              <input type="password" id="login-password" name="password" class="form-control"
+                     placeholder="••••••••" required aria-required="true" autocomplete="current-password" style="padding-right:40px">
+              <button type="button" class="pw-toggle" style="position:absolute;right:10px;background:none;border:none;font-size:1rem;cursor:pointer" aria-label="Toggle password visibility">👁️</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="login-role">Login as</label>
+            <select id="login-role" name="role" class="form-control form-select" aria-label="Select your role">
+              <option value="">Any Role (Auto-detect)</option>
+              <option value="customer">Customer</option>
+              <option value="advisor">Service Advisor</option>
+              <option value="mechanic">Mechanic</option>
+              <option value="admin">Administrator</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg" id="login-submit">Sign In →</button>
+        </form>
+
+        <p class="auth-footer">Don't have an account? <a href="#" id="goto-register">Create one free</a></p>
+      </div>
+
+      <!-- ===== REGISTER FORM ===== -->
+      <div id="register-form-wrap" class="hidden" role="tabpanel" aria-labelledby="tab-register">
+        <div class="auth-card-header">
+          <h2>Create Account 🚗</h2>
+          <p>Join VSMS and manage your vehicle services</p>
+        </div>
+
+        <form id="register-form" class="auth-form" novalidate aria-label="Registration form">
+          <!-- Role Selector -->
+          <div class="form-group">
+            <label class="form-label">I am a <span class="required" aria-hidden="true">*</span></label>
+            <div class="role-selector" role="radiogroup" aria-label="Select account type">
+              <label class="role-option selected" for="role-customer">
+                <input type="radio" id="role-customer" name="role" value="customer" checked>
+                <span class="role-icon" aria-hidden="true">👤</span>
+                <span class="role-name">Customer</span>
+              </label>
+              <label class="role-option" for="role-advisor">
+                <input type="radio" id="role-advisor" name="role" value="advisor">
+                <span class="role-icon" aria-hidden="true">🔧</span>
+                <span class="role-name">Advisor</span>
+              </label>
+              <label class="role-option" for="role-mechanic">
+                <input type="radio" id="role-mechanic" name="role" value="mechanic">
+                <span class="role-icon" aria-hidden="true">⚙️</span>
+                <span class="role-name">Mechanic</span>
+              </label>
+              <label class="role-option" for="role-admin">
+                <input type="radio" id="role-admin" name="role" value="admin">
+                <span class="role-icon" aria-hidden="true">👑</span>
+                <span class="role-name">Admin</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="reg-name">Full Name <span class="required" aria-hidden="true">*</span></label>
+              <input type="text" id="reg-name" name="name" class="form-control" placeholder="John Doe" required aria-required="true" autocomplete="name">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="reg-phone">Phone <span class="required" aria-hidden="true">*</span></label>
+              <input type="tel" id="reg-phone" name="phone" class="form-control" placeholder="9876543210" required aria-required="true" autocomplete="tel" maxlength="10">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="reg-email">Email Address <span class="required" aria-hidden="true">*</span></label>
+            <input type="email" id="reg-email" name="email" class="form-control" placeholder="you@example.com" required aria-required="true" autocomplete="email">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="reg-password">Password <span class="required" aria-hidden="true">*</span></label>
+            <div style="position:relative;display:flex;align-items:center">
+              <input type="password" id="reg-password" name="password" class="form-control" placeholder="Minimum 8 characters" required aria-required="true" autocomplete="new-password" style="padding-right:40px">
+              <button type="button" class="pw-toggle" style="position:absolute;right:10px;background:none;border:none;font-size:1rem;cursor:pointer" aria-label="Toggle password visibility">👁️</button>
+            </div>
+            <div class="password-strength" aria-live="polite">
+              <div class="strength-bar" aria-hidden="true">
+                <div class="strength-seg" id="seg1"></div>
+                <div class="strength-seg" id="seg2"></div>
+                <div class="strength-seg" id="seg3"></div>
+                <div class="strength-seg" id="seg4"></div>
+              </div>
+              <div class="strength-text" id="strength-text"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="reg-confirm">Confirm Password <span class="required" aria-hidden="true">*</span></label>
+            <div style="position:relative;display:flex;align-items:center">
+              <input type="password" id="reg-confirm" name="confirm_password" class="form-control" placeholder="Re-enter your password" required aria-required="true" autocomplete="new-password" style="padding-right:40px">
+              <button type="button" class="pw-toggle" style="position:absolute;right:10px;background:none;border:none;font-size:1rem;cursor:pointer" aria-label="Toggle password visibility">👁️</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.875rem">
+              <input type="checkbox" name="agree" id="reg-agree" required aria-required="true" style="margin-top:3px">
+              <span>I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block btn-lg" id="register-submit">Create Account 🎉</button>
+        </form>
+
+        <p class="auth-footer">Already have an account? <a href="#" id="goto-login">Sign in</a></p>
+      </div>
+
+      <!-- ===== RESET FORM ===== -->
+      <div id="reset-form-wrap" class="hidden" role="tabpanel" aria-labelledby="forgot-link">
+        <div class="auth-card-header">
+          <h2>Reset Password 🔐</h2>
+          <p>Enter your email to receive reset instructions</p>
+        </div>
+        <form id="reset-form" class="auth-form" novalidate aria-label="Password reset form">
+          <div class="form-group">
+            <label class="form-label" for="reset-email">Email Address <span class="required" aria-hidden="true">*</span></label>
+            <input type="email" id="reset-email" name="email" class="form-control" placeholder="you@example.com" required aria-required="true">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block btn-lg" id="reset-submit">Send Reset Link</button>
+        </form>
+        <p class="auth-footer"><a href="#" id="back-to-login">← Back to Sign In</a></p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/auth.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  seedDatabase();
+  Theme.init();
+  initAuthPage();
+});
+
+// Quick demo login
+function quickLogin(role) {
+  const demoAccounts = {
+    customer: { email: 'rajesh@example.com', password: 'password123' },
+    advisor:  { email: 'suresh@vsms.com',    password: 'advisor123'  },
+    mechanic: { email: 'ravi@vsms.com',      password: 'mechanic123' },
+    admin:    { email: 'admin@vsms.com',     password: 'admin123'    },
+  };
+  const acc = demoAccounts[role];
+  if (!acc) return;
+
+  // Fill form
+  const emailInput = document.getElementById('login-email');
+  const pwInput    = document.getElementById('login-password');
+  if (emailInput) emailInput.value = acc.email;
+  if (pwInput)    pwInput.value    = acc.password;
+
+  // Submit
+  const btn = document.getElementById(`demo-${role}`);
+  if (btn) { btn.classList.add('btn-loading'); btn.disabled = true; }
+
+  setTimeout(() => {
+    const result = Auth.login(acc.email, acc.password);
+    if (btn) { btn.classList.remove('btn-loading'); btn.disabled = false; }
+    if (result.success) {
+      Toast.success('Demo Login Successful', `Logged in as ${role} — ${result.user.name}`);
+      setTimeout(() => { window.location.href = Auth.roleRedirect(result.user.role); }, 800);
+    } else {
+      Toast.error('Login Failed', result.error);
+    }
+  }, 600);
+}
+</script>
+</body>
+</html>

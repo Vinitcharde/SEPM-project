@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mechanic Dashboard – VSMS</title>
+  <meta name="description" content="VSMS Mechanic Workspace – Inspect vehicles, record repairs, request spare parts, and track job progress.">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <a href="index.html" class="sidebar-logo">
+    <div class="sidebar-logo-icon">🛠️</div>
+    <div class="sidebar-logo-text"><h2>VSMS</h2><span>Mechanic Portal</span></div>
+  </a>
+  <div class="sidebar-user">
+    <div class="avatar" id="sidebarAvatar">MC</div>
+    <div class="sidebar-user-info">
+      <div class="sidebar-user-name" id="sidebarName">Mechanic</div>
+      <div class="sidebar-user-role">Service Technician</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Overview</div>
+    <button class="nav-item active" data-view="dashboard" data-tooltip="Dashboard"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></button>
+    <div class="nav-section-title">Job Tasks</div>
+    <button class="nav-item" data-view="assigned-jobs" data-tooltip="Assigned Jobs"><span class="nav-icon">📋</span><span class="nav-label">My Job Cards</span><span class="nav-badge" id="assignedCountBadge"></span></button>
+    <button class="nav-item" data-view="inspection" data-tooltip="Inspection"><span class="nav-icon">🔍</span><span class="nav-label">Vehicle Inspection</span></button>
+    <button class="nav-item" data-view="parts-request" data-tooltip="Parts Requisition"><span class="nav-icon">⚙️</span><span class="nav-label">Parts Requisition</span></button>
+    <button class="nav-item" data-view="completed-jobs" data-tooltip="Work History"><span class="nav-icon">✅</span><span class="nav-label">Completed Jobs</span></button>
+    <div class="nav-section-title">Account</div>
+    <button class="nav-item" data-view="notifications" data-tooltip="Notifications"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge" id="sidebarNotifBadge"></span></button>
+    <button class="nav-item" data-view="profile" data-tooltip="Profile"><span class="nav-icon">👤</span><span class="nav-label">My Profile</span></button>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="nav-item" id="logoutBtn" data-tooltip="Logout"><span class="nav-icon">🚪</span><span class="nav-label">Logout</span></button>
+  </div>
+</aside>
+
+<!-- TOP NAVIGATION -->
+<header class="topnav" id="topnav">
+  <button class="topnav-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+  <div class="topnav-search">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="globalSearch" placeholder="Search my assigned jobs, parts, vehicles…" aria-label="Global search">
+  </div>
+  <div class="topnav-actions">
+    <button class="topnav-btn" id="themeToggle" aria-label="Toggle theme">🌙</button>
+    <div class="dropdown" style="position:relative">
+      <button class="topnav-btn" id="notifBtn" aria-label="Notifications">🔔<span class="topnav-notif-count" id="notifCount">0</span></button>
+      <div class="notif-panel" id="notifPanel">
+        <div class="notif-header"><h4 style="margin:0">Notifications</h4><button class="btn btn-sm btn-ghost" id="markAllRead">Mark all read</button></div>
+        <div class="notif-list" id="notifList"></div>
+      </div>
+    </div>
+    <div class="dropdown">
+      <button class="topnav-user" id="userMenuBtn">
+        <div class="avatar" id="topnavAvatar">MC</div>
+        <div class="topnav-user-info"><div class="topnav-user-name" id="topnavName">Mechanic</div><div class="topnav-user-role">Technician</div></div>
+        <span>▾</span>
+      </button>
+      <div class="dropdown-menu" id="userMenu">
+        <a href="#" onclick="switchView('profile')">👤 My Profile</a>
+        <div class="dropdown-divider"></div>
+        <button onclick="Auth.logout()">🚪 Logout</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="main-content" id="mainContent">
+
+  <!-- DASHBOARD -->
+  <div class="view active" id="view-dashboard">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div>
+          <h1 class="page-title">Mechanic Workbench</h1>
+          <p class="page-subtitle">Welcome back, <span id="dashWelcomeName">Technician</span>! Track vehicle repairs and inspections.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:0.85rem;color:var(--text-muted)">Status:</span>
+          <select id="mechanicStatusSelect" class="form-control form-select" style="max-width:140px">
+            <option value="Available">🟢 Available</option>
+            <option value="Busy">🟠 Busy</option>
+            <option value="On Break">⚪ On Break</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="grid-stat mb-6">
+      <div class="stat-card" style="color:var(--primary)"><div class="stat-icon" style="background:var(--primary-light)">📋</div><div class="stat-info"><div class="stat-value" id="statAssigned">0</div><div class="stat-label">Assigned Jobs</div></div></div>
+      <div class="stat-card" style="color:var(--warning)"><div class="stat-icon" style="background:var(--warning-light)">🔍</div><div class="stat-info"><div class="stat-value" id="statInspection">0</div><div class="stat-label">In Inspection</div></div></div>
+      <div class="stat-card" style="color:var(--purple)"><div class="stat-icon" style="background:var(--purple-light)">⚙️</div><div class="stat-info"><div class="stat-value" id="statUnderRepair">0</div><div class="stat-label">Under Repair</div></div></div>
+      <div class="stat-card" style="color:var(--success)"><div class="stat-icon" style="background:var(--success-light)">🏆</div><div class="stat-info"><div class="stat-value" id="statCompleted">0</div><div class="stat-label">Completed Jobs</div></div></div>
+    </div>
+
+    <div class="grid-2">
+      <!-- CURRENT ACTIVE JOB -->
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">🔥 Current Active Job</h3></div>
+        <div class="card-body" id="currentJobWidget">
+          <div class="text-center p-4 text-muted">No active job selected.</div>
+        </div>
+      </div>
+
+      <!-- PENDING ASSIGNMENTS -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">⏳ My Assigned Queue</h3>
+          <button class="btn btn-sm btn-outline-primary" onclick="switchView('assigned-jobs')">View All</button>
+        </div>
+        <div id="pendingJobsWidget" class="card-body p-0"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY JOB CARDS VIEW -->
+  <div class="view" id="view-assigned-jobs">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div><h1 class="page-title">My Assigned Job Cards</h1><p class="page-subtitle">Track, update and progress vehicle service job cards</p></div>
+      </div>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="assignedJobSearch" class="form-control" placeholder="Search by JC ID, Vehicle, Problem…"></div>
+      <select id="assignedJobStatusFilter" class="form-control form-select" style="max-width:180px">
+        <option value="">All Statuses</option>
+        <option>Assigned</option>
+        <option>Under Inspection</option>
+        <option>Under Repair</option>
+        <option>Quality Check</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="table-container">
+        <table class="table">
+          <thead><tr><th>Job ID</th><th>Vehicle</th><th>Customer Complaint</th><th>Assigned On</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="assignedJobsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- VEHICLE INSPECTION VIEW -->
+  <div class="view" id="view-inspection">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div><h1 class="page-title">Vehicle Inspection Checklist</h1><p class="page-subtitle">Perform multi-point technical vehicle diagnostics</p></div>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="form-group" style="max-width:400px;margin-bottom:0">
+          <label class="form-label">Select Job Card to Inspect</label>
+          <select id="inspectionJobSelect" class="form-control form-select">
+            <option value="">-- Choose job card --</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="inspectionArea" class="hidden">
+      <div class="grid-2 mb-4">
+        <!-- Checklist Form -->
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Diagnostic Points Checklist</h3></div>
+          <div class="card-body">
+            <div id="inspectionChecklist" style="display:flex;flex-direction:column;gap:12px">
+              <label class="checkbox-label" style="display:flex;align-items:center;gap:10px">
+                <input type="checkbox" id="chk-engine" checked> <strong>Engine & Fluids:</strong> Oil levels, coolant, belts & pulleys
+              </label>
+              <label class="checkbox-label" style="display:flex;align-items:center;gap:10px">
+                <input type="checkbox" id="chk-brakes"> <strong>Braking System:</strong> Front & rear pads, discs, brake fluid lines
+              </label>
+              <label class="checkbox-label" style="display:flex;align-items:center;gap:10px">
+                <input type="checkbox" id="chk-battery" checked> <strong>Electrical & Battery:</strong> Battery voltage, terminal corrosion, fuses
+              </label>
+              <label class="checkbox-label" style="display:flex;align-items:center;gap:10px">
+                <input type="checkbox" id="chk-tyres"> <strong>Tyres & Wheels:</strong> Tread depth, tyre pressure, wheel balancing
+              </label>
+              <label class="checkbox-label" style="display:flex;align-items:center;gap:10px">
+                <input type="checkbox" id="chk-suspension"> <strong>Suspension & Steering:</strong> Bushings, shocks, steering rack
+              </label>
+              <label class="checkbox-label" style="display:flex;align-items:center;gap:10px">
+                <input type="checkbox" id="chk-ac" checked> <strong>AC & Cooling System:</strong> Compressor, condenser, cabin filter
+              </label>
+              <label class="checkbox-label" style="display:flex;align-items:center;gap:10px">
+                <input type="checkbox" id="chk-lights"> <strong>Lights & Electronics:</strong> Headlamps, indicators, brake lights, sensors
+              </label>
+            </div>
+            <div class="form-group mt-4">
+              <label class="form-label">Technician Inspection Findings & Diagnostics</label>
+              <textarea id="inspectionNotesInput" class="form-control" rows="4" placeholder="Detailed notes about parts to replace, observed leaks, or fault codes..."></textarea>
+            </div>
+            <button class="btn btn-primary btn-block" id="saveInspectionBtn">💾 Save Inspection Findings</button>
+          </div>
+        </div>
+
+        <!-- Vehicle Details Panel -->
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">🚗 Vehicle Information</h3></div>
+          <div class="card-body" id="inspectionVehicleInfo"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPARE PARTS REQUISITION VIEW -->
+  <div class="view" id="view-parts-request">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div><h1 class="page-title">Parts Requisition & Inventory</h1><p class="page-subtitle">Request parts from inventory and log parts consumed for repairs</p></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <!-- Add Part to Job Form -->
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">📦 Requisition Spare Parts</h3></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Select Active Job Card</label>
+            <select id="partReqJobSelect" class="form-control form-select">
+              <option value="">-- Choose active job --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Select Available Part</label>
+            <select id="partSelect" class="form-control form-select">
+              <option value="">-- Choose part from stock --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Quantity</label>
+            <input type="number" id="partQty" class="form-control" min="1" max="10" value="1">
+          </div>
+          <div id="partStockPreview" class="hidden" style="background:var(--bg-body);padding:10px;border-radius:var(--radius);margin-bottom:14px;font-size:0.85rem"></div>
+          <button class="btn btn-primary btn-block" id="addPartToJobBtn">➕ Issue Part & Deduct Stock</button>
+        </div>
+      </div>
+
+      <!-- Parts Inventory Overview -->
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">🛠️ Workshop Parts Stock</h3></div>
+        <div class="table-container">
+          <table class="table">
+            <thead><tr><th>Part Name</th><th>Category</th><th>In Stock</th><th>Unit Price</th></tr></thead>
+            <tbody id="workshopPartsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPLETED JOBS -->
+  <div class="view" id="view-completed-jobs">
+    <div class="page-header">
+      <h1 class="page-title">Completed Work History</h1>
+      <p class="page-subtitle">Archive of jobs completed and certified by you</p>
+    </div>
+    <div class="card">
+      <div class="table-container">
+        <table class="table">
+          <thead><tr><th>Job ID</th><th>Vehicle</th><th>Service Work Performed</th><th>Parts Used</th><th>Completed Date</th><th>Status</th></tr></thead>
+          <tbody id="completedJobsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS -->
+  <div class="view" id="view-notifications">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <h1 class="page-title">Notifications</h1>
+        <button class="btn btn-outline-secondary btn-sm" id="markAllReadBtn">✓ Mark All Read</button>
+      </div>
+    </div>
+    <div id="mechanicNotificationsContainer"></div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="view" id="view-profile">
+    <div class="page-header"><h1 class="page-title">Technician Profile</h1></div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">Technician Details</h3></div>
+        <div class="card-body">
+          <div style="text-align:center;margin-bottom:20px">
+            <div class="avatar avatar-xl" id="profileAvatar" style="margin:0 auto">MC</div>
+            <h3 id="profileName" style="margin-top:12px">Technician</h3>
+            <span class="badge badge-primary mt-2">Lead Mechanic</span>
+          </div>
+          <form id="profileForm">
+            <div class="form-group"><label class="form-label">Full Name</label><input type="text" id="prof-name" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Email</label><input type="email" id="prof-email" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Phone</label><input type="tel" id="prof-phone" class="form-control"></div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </form>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">Change Password</h3></div>
+        <div class="card-body">
+          <form id="passwordForm">
+            <div class="form-group"><label class="form-label">Current Password</label><input type="password" name="current" class="form-control"></div>
+            <div class="form-group"><label class="form-label">New Password</label><input type="password" name="newPass" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Confirm Password</label><input type="password" name="confirmPass" class="form-control"></div>
+            <button type="submit" class="btn btn-warning">Update Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Job Work Modal: Update State / Work Log -->
+<div class="modal-overlay" id="workModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h3 id="workModalTitle">Repair & Work Log</h3>
+      <button class="modal-close" onclick="Modal.close('workModal')">✕</button>
+    </div>
+    <div class="modal-body" id="workModalBody">
+      <input type="hidden" id="work-jc-id">
+      <div class="grid-2 mb-3">
+        <div>
+          <label class="form-label">Workflow Status</label>
+          <select id="work-jc-status" class="form-control form-select">
+            <option value="Under Inspection">🔍 Under Inspection</option>
+            <option value="Under Repair">⚙️ Under Repair</option>
+            <option value="Quality Check">🧪 Quality Check</option>
+            <option value="Completed">✅ Completed</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Labour Hours (Hours)</label>
+          <input type="number" id="work-jc-labour-hours" class="form-control" min="1" max="50" value="2">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Repair Work Conducted</label>
+        <textarea id="work-jc-repair-text" class="form-control" rows="4" placeholder="Detail the repairs completed, adjustments made, road test results..."></textarea>
+      </div>
+      <div id="workPartsAttached" class="mb-3"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('workModal')">Cancel</button>
+      <button class="btn btn-primary" id="saveWorkBtn">Update Work Log</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/mechanic.js"></script>
+</body>
+</html>

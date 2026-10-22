@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Service Advisor Dashboard – VSMS</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+  <a href="index.html" class="sidebar-logo">
+    <div class="sidebar-logo-icon">🔧</div>
+    <div class="sidebar-logo-text"><h2>VSMS</h2><span>Service Advisor</span></div>
+  </a>
+  <div class="sidebar-user">
+    <div class="avatar" id="sidebarAvatar">SA</div>
+    <div class="sidebar-user-info">
+      <div class="sidebar-user-name" id="sidebarName">Advisor</div>
+      <div class="sidebar-user-role">Service Advisor</div>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Overview</div>
+    <button class="nav-item active" data-view="dashboard" data-tooltip="Dashboard"><span class="nav-icon">📊</span><span class="nav-label">Dashboard</span></button>
+    <div class="nav-section-title">Operations</div>
+    <button class="nav-item" data-view="appointments" data-tooltip="Appointments"><span class="nav-icon">📅</span><span class="nav-label">Appointments</span></button>
+    <button class="nav-item" data-view="checkin" data-tooltip="Vehicle Check-In"><span class="nav-icon">🚗</span><span class="nav-label">Vehicle Check-In</span></button>
+    <button class="nav-item" data-view="jobcards" data-tooltip="Job Cards"><span class="nav-icon">📋</span><span class="nav-label">Job Cards</span></button>
+    <button class="nav-item" data-view="assign" data-tooltip="Mechanic Assignment"><span class="nav-icon">👷</span><span class="nav-label">Assign Mechanics</span></button>
+    <div class="nav-section-title">Services</div>
+    <button class="nav-item" data-view="services" data-tooltip="Services"><span class="nav-icon">🔧</span><span class="nav-label">Services</span></button>
+    <button class="nav-item" data-view="invoices" data-tooltip="Invoices"><span class="nav-icon">🧾</span><span class="nav-label">Invoices</span></button>
+    <div class="nav-section-title">Account</div>
+    <button class="nav-item" data-view="customers" data-tooltip="Customers"><span class="nav-icon">👥</span><span class="nav-label">Customers</span></button>
+    <button class="nav-item" data-view="notifications" data-tooltip="Notifications"><span class="nav-icon">🔔</span><span class="nav-label">Notifications</span><span class="nav-badge" id="sidebarNotifBadge"></span></button>
+    <button class="nav-item" data-view="profile" data-tooltip="Profile"><span class="nav-icon">👤</span><span class="nav-label">Profile</span></button>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="nav-item" id="logoutBtn" data-tooltip="Logout"><span class="nav-icon">🚪</span><span class="nav-label">Logout</span></button>
+  </div>
+</aside>
+
+<header class="topnav" id="topnav">
+  <button class="topnav-toggle" id="sidebarToggle" aria-label="Toggle sidebar">☰</button>
+  <div class="topnav-search">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="globalSearch" placeholder="Search appointments, customers…" aria-label="Global search">
+  </div>
+  <div class="topnav-actions">
+    <button class="topnav-btn" id="themeToggle" aria-label="Toggle theme">🌙</button>
+    <div class="dropdown" style="position:relative">
+      <button class="topnav-btn" id="notifBtn" aria-label="Notifications">🔔<span class="topnav-notif-count" id="notifCount">0</span></button>
+      <div class="notif-panel" id="notifPanel">
+        <div class="notif-header"><h4 style="margin:0">Notifications</h4><button class="btn btn-sm btn-ghost" id="markAllRead">Mark all read</button></div>
+        <div class="notif-list" id="notifList"></div>
+      </div>
+    </div>
+    <div class="dropdown">
+      <button class="topnav-user" id="userMenuBtn">
+        <div class="avatar" id="topnavAvatar">SA</div>
+        <div class="topnav-user-info"><div class="topnav-user-name" id="topnavName">Advisor</div><div class="topnav-user-role">Service Advisor</div></div>
+        <span>▾</span>
+      </button>
+      <div class="dropdown-menu" id="userMenu">
+        <a href="#" onclick="switchView('profile')">👤 My Profile</a>
+        <div class="dropdown-divider"></div>
+        <button onclick="Auth.logout()">🚪 Logout</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="main-content" id="mainContent">
+
+  <!-- DASHBOARD -->
+  <div class="view active" id="view-dashboard">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div><h1 class="page-title">Advisor Dashboard</h1><p class="page-subtitle">Service center operations overview</p></div>
+        <button class="btn btn-primary" onclick="switchView('checkin')">+ Vehicle Check-In</button>
+      </div>
+    </div>
+    <div class="grid-stat mb-6">
+      <div class="stat-card" style="color:var(--warning)"><div class="stat-icon" style="background:var(--warning-light)">📅</div><div class="stat-info"><div class="stat-value" id="statPending">0</div><div class="stat-label">Pending Appointments</div></div></div>
+      <div class="stat-card" style="color:var(--info)"><div class="stat-icon" style="background:var(--info-light)">🚗</div><div class="stat-info"><div class="stat-value" id="statCheckedIn">0</div><div class="stat-label">Vehicles In Service</div></div></div>
+      <div class="stat-card" style="color:var(--purple)"><div class="stat-icon" style="background:var(--purple-light)">📋</div><div class="stat-info"><div class="stat-value" id="statJobCards">0</div><div class="stat-label">Active Job Cards</div></div></div>
+      <div class="stat-card" style="color:var(--success)"><div class="stat-icon" style="background:var(--success-light)">✅</div><div class="stat-info"><div class="stat-value" id="statCompleted">0</div><div class="stat-label">Completed Today</div></div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">Today's Appointments</h3><button class="btn btn-sm btn-outline-primary" onclick="switchView('appointments')">View All</button></div>
+        <div id="todayAppointments" style="padding:0"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">Active Job Cards</h3><button class="btn btn-sm btn-outline-primary" onclick="switchView('jobcards')">View All</button></div>
+        <div id="activeJobCards" style="padding:0"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPOINTMENTS -->
+  <div class="view" id="view-appointments">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div><h1 class="page-title">Appointments</h1><p class="page-subtitle">Manage all service appointments</p></div>
+      </div>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="advAptSearch" class="form-control" placeholder="Search appointments…"></div>
+      <select id="advAptStatus" class="form-control form-select" style="max-width:160px">
+        <option value="">All Status</option>
+        <option>Pending</option><option>Confirmed</option><option>Checked-In</option><option>Completed</option><option>Cancelled</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="table-container">
+        <table class="table">
+          <thead><tr><th>Appt ID</th><th>Customer</th><th>Vehicle</th><th>Service</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="advAppointmentsBody"></tbody>
+        </table>
+      </div>
+      <div id="advAptPagination" class="card-footer"></div>
+    </div>
+  </div>
+
+  <!-- VEHICLE CHECK-IN -->
+  <div class="view" id="view-checkin">
+    <div class="page-header">
+      <h1 class="page-title">Vehicle Check-In</h1>
+      <p class="page-subtitle">Check in customer vehicles for service</p>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">🚗 Process Check-In</h3></div>
+        <div class="card-body">
+          <div class="form-group">
+            <label class="form-label">Select Appointment</label>
+            <select id="checkin-apt" class="form-control form-select">
+              <option value="">-- Select confirmed appointment --</option>
+            </select>
+          </div>
+          <div id="checkinPreview" class="hidden">
+            <div style="background:var(--bg-body);border-radius:var(--radius);padding:14px;margin:14px 0" id="checkinDetails"></div>
+          </div>
+          <button class="btn btn-primary btn-block" id="processCheckinBtn" onclick="processCheckin()">✅ Process Check-In & Create Job Card</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">📋 Pending Check-Ins</h3></div>
+        <div id="pendingCheckins" style="padding:0"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JOB CARDS -->
+  <div class="view" id="view-jobcards">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div><h1 class="page-title">Job Cards</h1><p class="page-subtitle">Manage vehicle job cards</p></div>
+      </div>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="jcSearch" class="form-control" placeholder="Search job cards…"></div>
+      <select id="jcStatusFilter" class="form-control form-select" style="max-width:180px">
+        <option value="">All Status</option>
+        <option>Created</option><option>Assigned</option><option>Under Inspection</option>
+        <option>Under Repair</option><option>Quality Check</option><option>Completed</option><option>Closed</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="table-container">
+        <table class="table">
+          <thead><tr><th>JC ID</th><th>Customer</th><th>Vehicle</th><th>Service</th><th>Mechanic</th><th>Est. Cost</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="jobCardsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MECHANIC ASSIGNMENT -->
+  <div class="view" id="view-assign">
+    <div class="page-header">
+      <h1 class="page-title">Mechanic Assignment</h1>
+      <p class="page-subtitle">Assign mechanics to job cards</p>
+    </div>
+    <div id="assignContainer"></div>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="view" id="view-services">
+    <div class="page-header">
+      <h1 class="page-title">Services Catalog</h1>
+      <p class="page-subtitle">Available service types and pricing</p>
+    </div>
+    <div class="grid-3" id="serviceCatalog"></div>
+  </div>
+
+  <!-- INVOICES -->
+  <div class="view" id="view-invoices">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <div><h1 class="page-title">Invoices</h1><p class="page-subtitle">Generate and manage invoices</p></div>
+      </div>
+    </div>
+    <div id="advInvoicesContainer"></div>
+  </div>
+
+  <!-- CUSTOMERS -->
+  <div class="view" id="view-customers">
+    <div class="page-header">
+      <h1 class="page-title">Customers</h1>
+      <p class="page-subtitle">View customer information</p>
+    </div>
+    <div class="search-bar">
+      <div class="search-input-wrap"><span class="search-icon">🔍</span><input type="text" id="custSearch" class="form-control" placeholder="Search customers…"></div>
+    </div>
+    <div class="card">
+      <div class="table-container">
+        <table class="table">
+          <thead><tr><th>Customer</th><th>Phone</th><th>Email</th><th>Vehicles</th><th>Appointments</th><th>Status</th></tr></thead>
+          <tbody id="customersBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS -->
+  <div class="view" id="view-notifications">
+    <div class="page-header">
+      <div class="page-header-flex">
+        <h1 class="page-title">Notifications</h1>
+        <button class="btn btn-outline-secondary btn-sm" id="markAllReadBtn">✓ Mark All Read</button>
+      </div>
+    </div>
+    <div id="advNotificationsContainer"></div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="view" id="view-profile">
+    <div class="page-header"><h1 class="page-title">My Profile</h1></div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">Personal Information</h3></div>
+        <div class="card-body">
+          <div style="text-align:center;margin-bottom:20px">
+            <div class="avatar avatar-xl" id="profileAvatar" style="margin:0 auto">SA</div>
+            <h3 id="profileName" style="margin-top:12px">Advisor</h3>
+            <span class="badge badge-primary mt-2">Service Advisor</span>
+          </div>
+          <form id="profileForm">
+            <div class="form-group"><label class="form-label">Full Name</label><input type="text" name="name" id="prof-name" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Email</label><input type="email" name="email" id="prof-email" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Phone</label><input type="tel" name="phone" id="prof-phone" class="form-control"></div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </form>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">Change Password</h3></div>
+        <div class="card-body">
+          <form id="passwordForm">
+            <div class="form-group"><label class="form-label">Current Password</label><input type="password" name="current" class="form-control"></div>
+            <div class="form-group"><label class="form-label">New Password</label><input type="password" name="newPass" class="form-control"></div>
+            <div class="form-group"><label class="form-label">Confirm Password</label><input type="password" name="confirmPass" class="form-control"></div>
+            <button type="submit" class="btn btn-warning">Update Password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Job Card Detail Modal -->
+<div class="modal-overlay" id="jcDetailModal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3 id="jcDetailTitle">Job Card Details</h3><button class="modal-close" onclick="Modal.close('jcDetailModal')">✕</button></div>
+    <div class="modal-body" id="jcDetailContent"></div>
+    <div class="modal-footer" id="jcDetailFooter"></div>
+  </div>
+</div>
+
+<!-- Update Job Card Status Modal -->
+<div class="modal-overlay" id="updateJcModal">
+  <div class="modal">
+    <div class="modal-header"><h3>Update Job Card</h3><button class="modal-close" onclick="Modal.close('updateJcModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="update-jc-id">
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select id="update-jc-status" class="form-control form-select">
+          <option>Created</option><option>Assigned</option><option>Under Inspection</option>
+          <option>Under Repair</option><option>Quality Check</option><option>Completed</option><option>Closed</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Inspection Details</label><textarea id="update-jc-inspection" class="form-control" rows="3" placeholder="Add inspection notes…"></textarea></div>
+      <div class="form-group"><label class="form-label">Repair Details</label><textarea id="update-jc-repair" class="form-control" rows="3" placeholder="Add repair details…"></textarea></div>
+      <div class="form-group"><label class="form-label">Actual Cost (₹)</label><input type="number" id="update-jc-cost" class="form-control" placeholder="Enter actual cost"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('updateJcModal')">Cancel</button>
+      <button class="btn btn-primary" id="saveJcUpdateBtn">Save Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- Assign Mechanic Modal -->
+<div class="modal-overlay" id="assignMechanicModal">
+  <div class="modal">
+    <div class="modal-header"><h3>Assign Mechanic</h3><button class="modal-close" onclick="Modal.close('assignMechanicModal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="assign-jc-id">
+      <div class="form-group">
+        <label class="form-label">Select Mechanic</label>
+        <select id="assign-mechanic-select" class="form-control form-select">
+          <option value="">-- Select mechanic --</option>
+        </select>
+      </div>
+      <div id="mechanicInfo" class="hidden"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('assignMechanicModal')">Cancel</button>
+      <button class="btn btn-primary" id="confirmAssignBtn">Assign</button>
+    </div>
+  </div>
+</div>
+
+<!-- Generate Invoice Modal -->
+<div class="modal-overlay" id="genInvoiceModal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>Generate Invoice</h3><button class="modal-close" onclick="Modal.close('genInvoiceModal')">✕</button></div>
+    <div class="modal-body" id="genInvoiceContent"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Modal.close('genInvoiceModal')">Cancel</button>
+      <button class="btn btn-primary" id="createInvoiceBtn">Generate Invoice</button>
+    </div>
+  </div>
+</div>
+
+<!-- Invoice View Modal -->
+<div class="modal-overlay" id="invoiceViewModal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><h3>Invoice Details</h3><button class="modal-close" onclick="Modal.close('invoiceViewModal')">✕</button></div>
+    <div class="modal-body" id="invoiceViewContent"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="printElement('invoiceViewContent')">🖨️ Print</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="js/storage.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/seed.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/advisor.js"></script>
+</body>
+</html>
